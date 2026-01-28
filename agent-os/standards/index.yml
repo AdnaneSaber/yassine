@@ -1,6 +1,52 @@
 # Agent OS Standards Index
 
+api:
+  endpoint-conventions:
+    description: RESTful API endpoint naming, HTTP methods, query parameters, and pagination patterns
+  error-handling:
+    description: Error code patterns, HTTP status mapping, and error response structure
+  response-format:
+    description: API response envelope structure for success/error responses
+
+database:
+  mongodb-naming-conventions:
+    description: Field naming, collection naming, and reference patterns for MongoDB
+  mongodb-references:
+    description: Reference vs embedded documents, denormalization strategies, and population patterns
+  mongodb-schema-patterns:
+    description: Document structure, validation, timestamps, and Mongoose schema patterns
+
+naming:
+  domain-terminology:
+    description: French academic domain terms, entity names, status values, and document types
+  french-naming-patterns:
+    description: Technical implementation of French terms - accent handling, casing, and code patterns
+
+project-structure:
+  component-organization:
+    description: React component structure, Server vs Client components, and feature-based organization
+  file-naming:
+    description: File naming conventions for Next.js App Router project
+  nextjs-app-router-structure:
+    description: Directory structure for Next.js 15 App Router with route groups and server actions
+
+typescript:
+  naming-conventions:
+    description: TypeScript type/interface naming, suffixes, and file naming patterns
+  type-definitions:
+    description: Type vs interface usage, generic types, Zod inference, and Mongoose typing
+  type-organization:
+    description: Co-location strategy, types directory structure, and import patterns
+
+workflow:
+  state-machine-patterns:
+    description: Workflow class structure, status metadata, transition hooks, and auto-transitions
+  status-transitions:
+    description: State transition maps, validation, permission rules, and terminal states
+  workflow-validation:
+    description: Pre-transition validation, business rules, concurrent modification, and multi-layer validation
+
 root:
   tech-stack:
-    description: Needs description - run /index-standards
+    description: Technology stack overview and starter standard file
 
