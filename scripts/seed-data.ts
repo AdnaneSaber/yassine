@@ -48,31 +48,56 @@ async function seedDatabase() {
     }
   ]);
 
-  // Create sample demandes
-  await Demande.create([
-    {
-      etudiant: {
-        id: etudiants[0]._id,
-        nom: etudiants[0].nom,
-        prenom: etudiants[0].prenom,
-        email: etudiants[0].email,
-        matricule: etudiants[0].matricule
-      },
-      typeDemande: {
-        code: 'ATTESTATION_SCOLARITE',
-        nom: 'Attestation de scolarité',
-        delaiTraitement: 3
-      },
-      statut: {
-        code: 'EN_COURS',
-        libelle: 'En cours',
-        couleur: '#F59E0B'
-      },
-      objet: 'Attestation pour dossier CAF',
-      description: 'J\'ai besoin d\'une attestation de scolarité pour mon dossier CAF avant le 30/01/2024',
-      priorite: 'NORMALE'
-    }
-  ]);
+  // Create sample demandes (one by one to trigger pre-save hooks)
+  const demande1 = new Demande({
+    etudiant: {
+      id: etudiants[0]._id,
+      nom: etudiants[0].nom,
+      prenom: etudiants[0].prenom,
+      email: etudiants[0].email,
+      matricule: etudiants[0].matricule
+    },
+    typeDemande: {
+      code: 'ATTESTATION_SCOLARITE',
+      nom: 'Attestation de scolarité',
+      delaiTraitement: 3
+    },
+    statut: {
+      code: 'EN_COURS',
+      libelle: 'En cours',
+      couleur: '#F59E0B'
+    },
+    objet: 'Attestation pour dossier CAF',
+    description: 'J\'ai besoin d\'une attestation de scolarité pour mon dossier CAF avant le 30/01/2024',
+    priorite: 'NORMALE'
+  });
+  await demande1.save();
+
+  const demande2 = new Demande({
+    etudiant: {
+      id: etudiants[1]._id,
+      nom: etudiants[1].nom,
+      prenom: etudiants[1].prenom,
+      email: etudiants[1].email,
+      matricule: etudiants[1].matricule
+    },
+    typeDemande: {
+      code: 'RELEVE_NOTES',
+      nom: 'Relevé de notes',
+      delaiTraitement: 5
+    },
+    statut: {
+      code: 'SOUMIS',
+      libelle: 'Soumis',
+      couleur: '#6B7280'
+    },
+    objet: 'Relevé de notes S1 2024',
+    description: 'Demande de relevé de notes du premier semestre 2024 pour candidature master',
+    priorite: 'HAUTE'
+  });
+  await demande2.save();
+
+  console.log('✅ Created demandes:', demande1.numeroDemande, demande2.numeroDemande);
 
   console.log('✅ Database seeded successfully');
   process.exit(0);
