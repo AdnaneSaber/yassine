@@ -42,8 +42,8 @@ export async function createDemandeAction(
       };
     }
 
-    // Create demande
-    const demande = await Demande.create({
+    // Create demande (use new + save to trigger pre-save hooks)
+    const demande = new Demande({
       etudiant: {
         id: etudiant._id,
         nom: etudiant.nom,
@@ -66,6 +66,7 @@ export async function createDemandeAction(
       documents: [],
       metadata: {}
     });
+    await demande.save(); // This triggers pre-save hook for numeroDemande
 
     // Auto-transition to RECU
     const workflow = new DemandeWorkflow(demande, {
