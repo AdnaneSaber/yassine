@@ -1,322 +1,291 @@
-# Core Request Management System - Feature Specification
-
-**Spec Date:** 2026-01-28
-**Version:** 1.0
-**Status:** Draft
+# Core Request Management System - Shape
 
 ## Overview
 
-The Core Request Management System is the central feature of the university administrative platform. It enables students to submit and track administrative requests (attestations, transcripts, conventions) through a digital workflow, while providing administrators with a complete dashboard to process, validate, and manage these requests efficiently.
-
-This system replaces manual, paper-based processes with an automated, traceable, and intelligent workflow engine.
+The Core Request Management System is the foundational feature of the academic administrative platform. It enables students to submit administrative requests (attestations, transcripts, etc.), track their status, and allows administrative staff to process these requests through a defined workflow.
 
 ## Problem Statement
 
-French academic institutions face fragmented and manual administrative processes for handling student requests:
+French academic institutions face fragmented and manual administrative request processing:
+- Long and unpredictable processing delays
+- Lack of visibility on request status
+- Document errors and losses
+- High administrative workload
+- Frustrating student experience
 
-- **Long and unpredictable processing times**: No visibility into request status or expected completion
-- **Lost documents and errors**: Paper-based systems prone to loss and human error
-- **Heavy administrative burden**: Manual tracking and processing increases workload
-- **Frustrating student experience**: No self-service portal, unclear status updates
-- **Lack of data insights**: No analytics to optimize processes or identify bottlenecks
+## Solution Scope
 
-## Solution Architecture
+Build a complete request management workflow system that includes:
 
-The Core Request Management System consists of three integrated components:
+### 1. Student Request Submission
+- Multi-step form with validation
+- Document upload (PDF, images)
+- Request type selection (attestation, transcript, etc.)
+- Real-time form validation
+- Confirmation email
 
-### 1. Student Portal
-Self-service interface enabling students to:
-- Submit new administrative requests via structured forms
-- Upload required supporting documents
-- Track real-time status of their requests
-- View complete request history with timeline
-- Receive automated email notifications at each workflow stage
+### 2. Request Status Management
+- State machine with 8 defined states
+- Automated transitions (SOUMIS → RECU)
+- Admin-initiated transitions (approval, rejection)
+- Status history tracking
+- Email notifications on status changes
 
-### 2. Admin Dashboard
-Management interface enabling administrators to:
-- View and filter all incoming requests
-- Update request status through validated workflow transitions
-- Add comments and internal notes
-- Assign requests to specific administrators
-- Search and filter by multiple criteria (status, type, priority, date)
-- Access complete audit trail of all actions
+### 3. Student Interface
+- Dashboard with request overview
+- Request submission form
+- My requests list with filters
+- Individual request detail view
+- Status tracking timeline
+- Document download
 
-### 3. Workflow Engine
-Automated state machine managing the request lifecycle:
-- Enforces valid status transitions (SOUMIS → RECU → EN_COURS → VALIDE → TRAITE)
-- Triggers automated actions (emails, notifications, date stamps)
-- Validates business rules at each transition
-- Maintains complete historique (audit log) of all changes
-- Supports configurable workflows per request type
+### 4. Admin Interface
+- Admin dashboard with metrics
+- Request queue management
+- Status modification controls
+- Request assignment
+- Bulk operations
+- Advanced filtering
 
-## Key Features
+### 5. Database Models
+- **Demande**: Core request entity with embedded student info
+- **Etudiant**: Student entity with academic information
+- **Historique**: Audit trail for all status changes
+- **Utilisateur**: User accounts with role-based access
+- **Notification**: Email notification queue
 
-### Request Types Supported
+### 6. API Layer
+- RESTful endpoints for CRUD operations
+- File upload endpoint
+- Workflow transition endpoint
+- Query endpoints with pagination and filtering
 
-| Type | Code | Processing Time | Required Documents |
-|------|------|----------------|-------------------|
-| Attestation de scolarité | ATTESTATION_SCOLARITE | 3 days | Student ID |
-| Relevé de notes | RELEVE_NOTES | 5 days | Exam results |
-| Attestation de réussite | ATTESTATION_REUSSITE | 5 days | Final grades |
-| Duplicata carte étudiant | DUPLICATA_CARTE | 7 days | ID photo, police report |
-| Convention de stage | CONVENTION_STAGE | 3 days | Internship agreement |
+### 7. Server Actions
+- Form submission handler
+- Status update handler
+- Document upload handler
+- Validation and error handling
 
-### Workflow States
+## Out of Scope (Not in Core)
+
+- Analytics dashboard (separate feature)
+- Document generation (separate feature)
+- Email templates system (use basic templates)
+- SMS notifications (email only for now)
+- Advanced search (basic filters only)
+- Export to Excel (later feature)
+- Multi-language support (French only)
+
+## Key Decisions
+
+### 1. MongoDB with Strategic Denormalization
+
+**Decision**: Use MongoDB with denormalized student data in demandes collection.
+
+**Rationale**:
+- Read performance: Student name displayed in 95% of queries
+- Student data rarely changes
+- Avoids JOIN operations for list views
+- Simpler queries for common operations
+
+**Trade-off**: Data duplication, but acceptable for this use case.
+
+### 2. Next.js 15 App Router with Server Components
+
+**Decision**: Use App Router with Server Components by default, Client Components only when needed.
+
+**Rationale**:
+- Better performance (less JavaScript to client)
+- Built-in data fetching
+- Simplified state management
+- Better SEO for public pages
+
+**Trade-off**: Learning curve for team, but modern Next.js pattern.
+
+### 3. Server Actions for Mutations
+
+**Decision**: Use Server Actions for form submissions and data mutations.
+
+**Rationale**:
+- Progressive enhancement
+- Type-safe end-to-end
+- Integrated with Next.js caching
+- Simpler than separate API routes for forms
+
+**Trade-off**: Less control than API routes, but sufficient for forms.
+
+### 4. Zod for Validation
+
+**Decision**: Use Zod schemas as single source of truth for validation.
+
+**Rationale**:
+- Runtime validation
+- TypeScript type inference
+- Client and server validation from same schema
+- Excellent error messages
+
+**Trade-off**: None significant.
+
+### 5. State Machine for Workflow
+
+**Decision**: Implement workflow as state machine with defined transitions.
+
+**Rationale**:
+- Prevents invalid state changes
+- Clear business rules
+- Auditable transitions
+- Extensible for future states
+
+**Trade-off**: More complex than simple status field, but necessary for data integrity.
+
+### 6. Embedded Documents in MongoDB
+
+**Decision**: Embed frequently accessed data (student info, status info) in demande documents.
+
+**Rationale**:
+- Single query for 95% of use cases
+- Faster list rendering
+- Simpler application code
+- Natural data model for NoSQL
+
+**Trade-off**: Data duplication, update propagation needed.
+
+### 7. Role-Based Access Control
+
+**Decision**: Three roles: STUDENT, ADMIN, SUPER_ADMIN with route groups.
+
+**Rationale**:
+- Simple but sufficient
+- Clear separation of interfaces
+- Extensible for future roles
+- Middleware-based enforcement
+
+**Trade-off**: Not as granular as permission-based, but adequate.
+
+## User Flows
+
+### Student Submission Flow
 
 ```
-SOUMIS (Submitted)
-   ↓ Auto
-RECU (Received) ──────────┐
-   ↓ Admin                │ Admin reject
-EN_COURS (In Progress) ──┤
-   ↓ Admin                │
-VALIDE (Validated)        │
-   ↓ Auto                 ↓
-TRAITE (Processed)    REJETE (Rejected)
-   ↓ After 6 months       ↓
-ARCHIVE (Archived) ←──────┘
+1. Student logs in
+2. Navigates to "New Request"
+3. Selects request type (dropdown)
+4. Fills in form (objet, description)
+5. Uploads supporting documents
+6. Reviews and submits
+7. Sees confirmation with request number
+8. Receives confirmation email
+9. Request auto-transitions: SOUMIS → RECU
 ```
 
-### Priority Levels
+### Admin Processing Flow
 
-- **BASSE**: Standard processing
-- **NORMALE**: Default priority (most requests)
-- **HAUTE**: Expedited processing
-- **URGENTE**: Critical/time-sensitive (auto-flagged based on deadline)
+```
+1. Admin logs in to admin dashboard
+2. Sees pending requests queue
+3. Clicks on request to view details
+4. Reviews documents and information
+5. Assigns request to self (EN_COURS status)
+6. Validates or rejects:
+   - Validates: Status → VALIDE → TRAITE (auto)
+   - Rejects: Status → REJETE (requires motif)
+7. Student receives email notification
+8. Request appears in admin history
+```
 
-### Automated Actions
+### Student Tracking Flow
 
-1. **On submission** (SOUMIS → RECU):
-   - Generate unique request number (DEM-YYYY-NNNNNN)
-   - Send confirmation email to student
-   - Log creation in historique
-   - Auto-transition to RECU status
-
-2. **On validation** (VALIDE → TRAITE):
-   - Set dateTraitement timestamp
-   - Send completion email with document link
-   - Update analytics
-   - Log transition
-
-3. **On rejection** (→ REJETE):
-   - Require motifRefus (rejection reason)
-   - Send rejection email with explanation
-   - Log with full context
-
-4. **On info request** (→ ATTENTE_INFO):
-   - Send email to student requesting additional information
-   - Include admin comment with specific requirements
-
-## Data Model
-
-### Core Collections
-
-**demandes**: Primary request collection
-- Strategic denormalization: Embeds student info for read performance
-- Full workflow state with code + libelle + couleur
-- Embedded documents array for file attachments
-- Flexible metadata field for type-specific attributes
-
-**etudiants**: Student master data
-- Source of truth for student information
-- Referenced by demandes via id
-- Supports multiple active demandes per student
-
-**utilisateurs**: System users (students + admins)
-- Role-based authentication (STUDENT, ADMIN, SUPER_ADMIN)
-- Links to etudiant record for students
-
-**historique**: Complete audit trail
-- Immutable log of all status changes
-- Captures before/after state snapshots
-- Records user, timestamp, and context for every action
-
-**notifications**: Email queue and tracking
-- Async email processing via background workers
-- Retry logic for failed sends
-- Delivery status tracking
-
-### Key Design Decisions
-
-**Decision 1: Strategic Denormalization**
-- Store student name, email, matricule in demandes collection
-- Rationale: 95% of queries need this data; student names change rarely
-- Trade-off: Slightly stale data vs. massive performance gain (no JOINs)
-
-**Decision 2: Code + Label Pattern**
-- All statuses/types store both machine code (RECU) and display label ("Reçu")
-- Rationale: Enables query by code, display by label, UI color coding
-- Benefit: Consistent UI rendering, easy filtering, i18n-ready
-
-**Decision 3: Embedded Documents Array**
-- Store uploaded documents directly in demandes collection
-- Rationale: Always fetched together, max ~10 docs per request
-- Alternative considered: Separate documents collection (rejected - over-engineering)
-
-**Decision 4: Workflow as First-Class Citizen**
-- Dedicated DemandeWorkflow class encapsulating all state logic
-- Rationale: Centralized validation, reusable transitions, consistent hooks
-- Benefit: Impossible to create invalid states, complete audit trail
-
-**Decision 5: Mongoose for MVP**
-- Use Mongoose ODM (not Prisma) for prototype
-- Rationale: Simpler setup, better MongoDB feature support, embedded docs
-- Note: Architecture supports future migration to Prisma if needed
-
-## Technical Stack
-
-### Backend
-- **Framework**: Next.js 14+ (App Router)
-- **Database**: MongoDB (Atlas or local)
-- **ODM**: Mongoose
-- **Validation**: Zod (runtime + type inference)
-- **Authentication**: NextAuth.js
-- **File Storage**: Cloudinary (or local for development)
-- **Email**: Resend (or Nodemailer for development)
-
-### Frontend
-- **Framework**: React 18+ with TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Forms**: React Hook Form + Zod
-- **State**: React Context API
-- **Data Fetching**: Server Actions + API Routes
-
-### Development
-- **Language**: TypeScript (strict mode)
-- **Linting**: ESLint + Prettier
-- **Testing**: Jest + React Testing Library
-- **Version Control**: Git
-
-## Business Intelligence
-
-### Key Metrics
-
-1. **Volume Metrics**
-   - Total requests per day/week/month
-   - Requests by type (breakdown)
-   - Requests by status (current state distribution)
-
-2. **Performance Metrics**
-   - Average processing time by type
-   - SLA compliance rate (% within expected delaiTraitement)
-   - Admin response time (RECU → EN_COURS)
-
-3. **Quality Metrics**
-   - Rejection rate by type
-   - Top rejection reasons
-   - Requests requiring additional info (ATTENTE_INFO rate)
-
-4. **User Metrics**
-   - Active students (requests in last 30 days)
-   - Requests per student (distribution)
-   - Peak submission hours/days
-
-### Analytics Implementation
-
-- Metabase connected directly to MongoDB
-- Pre-built dashboards for admins and directors
-- Real-time metrics with daily/weekly email reports
-
-## Non-Functional Requirements
-
-### Performance
-- Request list page loads in < 500ms
-- API responses in < 200ms (95th percentile)
-- Support 100 concurrent users
-- Handle 1000+ requests in database
-
-### Security
-- JWT-based authentication with 24h expiration
-- RBAC: Students see only their requests, Admins see all
-- Input validation at API layer (Zod schemas)
-- File upload restrictions: 5MB max, PDF/JPG/PNG only
-- HTTPS required in production
-
-### Reliability
-- Graceful error handling with user-friendly messages
-- Email retry logic (3 attempts with exponential backoff)
-- Database connection pooling
-- Crash recovery (no data loss on server restart)
-
-### Usability
-- Mobile-responsive design (Tailwind breakpoints)
-- French language throughout UI
-- Accessible (WCAG 2.1 AA compliance)
-- Clear status badges with color coding
-
-### Maintainability
-- TypeScript strict mode (no implicit any)
-- Comprehensive code comments in English
-- Zod schemas as single source of truth for validation
-- Modular architecture (easy to add new request types)
+```
+1. Student navigates to "My Requests"
+2. Sees list of all requests with status badges
+3. Filters by status (optional)
+4. Clicks on request for details
+5. Sees status history timeline
+6. Downloads submitted documents
+7. Sees processing comments (if any)
+```
 
 ## Success Criteria
 
-### MVP Launch Criteria
+### Functional Requirements
+- ✅ Students can submit requests with documents
+- ✅ Requests follow defined workflow states
+- ✅ Admins can process and update request status
+- ✅ Email notifications sent on status changes
+- ✅ Complete audit trail in historique
+- ✅ Students can track request progress
 
-1. **Feature Completeness**
-   - ✅ All 5 request types submittable
-   - ✅ Complete workflow (SOUMIS through TRAITE/REJETE)
-   - ✅ Student portal with tracking
-   - ✅ Admin dashboard with all filters
-   - ✅ Email notifications at each stage
+### Non-Functional Requirements
+- ✅ Page load < 2 seconds
+- ✅ Form submission < 3 seconds
+- ✅ File upload < 5 seconds (5MB limit)
+- ✅ Mobile responsive (Tailwind)
+- ✅ Accessible (WCAG 2.1 AA)
+- ✅ French terminology throughout
 
-2. **Data Quality**
-   - ✅ 100% of transitions logged in historique
-   - ✅ Zero invalid state transitions possible
-   - ✅ All required fields validated
+### Data Requirements
+- ✅ MongoDB indexes for performance
+- ✅ Automatic timestamps on all documents
+- ✅ Soft deletes (actif field)
+- ✅ Unique request numbers (DEM-YYYY-NNNNNN)
+- ✅ Reference integrity maintained
 
-3. **Performance**
-   - ✅ Student request list loads < 1 second
-   - ✅ Admin dashboard loads < 2 seconds
-   - ✅ Email delivery within 5 minutes
+## Technical Constraints
 
-4. **User Acceptance**
-   - ✅ Students can submit request in < 3 minutes
-   - ✅ Admins can process request in < 2 minutes
-   - ✅ Zero critical bugs in production testing
+1. **Stack Locked**: Next.js 15 + MongoDB + TypeScript (per project requirements)
+2. **French Domain**: All entity names, fields, and UI in French
+3. **No Authentication System**: Use Next-Auth or similar (not in this spec)
+4. **MongoDB Atlas**: Free tier (512 MB) sufficient for PoC
+5. **Cloudinary**: For file storage (free tier)
+6. **Development Environment**: Local MongoDB for dev, Atlas for staging/prod
 
-### Post-MVP Enhancements
+## Dependencies
 
-- SMS notifications (in addition to email)
-- Document e-signature
-- Advanced search with full-text
-- Bulk operations (approve/reject multiple)
-- Mobile app (React Native)
-- Internationalization (Arabic, English)
+### External Systems
+- MongoDB Atlas (database)
+- Cloudinary (file storage)
+- SMTP service (email notifications)
+- Next-Auth (authentication) - assumed available
+
+### Internal Dependencies
+- Authentication system must be implemented first
+- User roles must be assigned
+- Email service must be configured
 
 ## Risks and Mitigations
 
-| Risk | Impact | Likelihood | Mitigation |
-|------|--------|-----------|-----------|
-| Email deliverability issues | High | Medium | Implement retry queue, use reputable provider (Resend), monitor bounce rates |
-| File storage costs | Medium | Low | Set quota per student, compress PDFs, use CDN only if needed |
-| Concurrent updates (race conditions) | High | Low | Mongoose optimistic locking (__v), validate before transitions |
-| MongoDB query performance degradation | High | Medium | Strategic indexes on etudiant.id, statut.code, createdAt; pagination required |
-| Workflow complexity creep | Medium | High | Strict transition validation, comprehensive tests, documentation |
+| Risk | Impact | Mitigation |
+|------|--------|-----------|
+| MongoDB free tier limits | Medium | Monitor usage, implement pagination |
+| File upload failures | High | Retry logic, progress indicators |
+| Email delivery failures | Medium | Queue system with retry (BullMQ) |
+| State machine complexity | Medium | Comprehensive tests, clear documentation |
+| Concurrent updates | Medium | Optimistic locking with version field |
+| Performance at scale | Low | Proper indexes, query optimization |
 
-## Out of Scope (Phase 1)
+## Future Enhancements (Not Now)
 
-- Payment processing (fee collection)
-- Integration with ERP/student information system
-- Digital signature (cryptographic)
+- Advanced analytics dashboard
+- Document generation (PDF attestations)
+- SMS notifications
 - Multi-language support
-- Admin role hierarchy (department-level permissions)
-- Advanced analytics (ML predictions)
-- Mobile native apps
+- Advanced search with Elasticsearch
+- Real-time updates with WebSockets
+- Mobile app
+- Integration with university information system
+- Batch import of students
+- Calendar integration for deadlines
 
-## References
+## Open Questions
 
-- Product Mission: `/agent-os/product/mission.md`
-- Technical Architecture: `/agent-os/product/architecture.md`
-- Implementation Guide: `/agent-os/product/implementation-guide.md`
-- Roadmap: `/agent-os/product/roadmap.md`
-- Standards: `/agent-os/standards/` (database, API, workflow, TypeScript, naming)
+1. **Authentication**: Which authentication provider to use? (Next-Auth, Clerk, Auth0)
+2. **Email Service**: Which SMTP provider? (SendGrid, Mailgun, AWS SES)
+3. **Deployment**: Where to deploy? (Vercel, Railway, DigitalOcean)
+4. **Monitoring**: Which monitoring tool? (Sentry, LogRocket)
 
----
+## Notes
 
-**Sign-off:**
-- Product Owner: [Pending]
-- Technical Lead: [Pending]
-- Date: 2026-01-28
+- This is a Proof of Concept / Academic project demonstrating professional execution
+- Focus on clean code and modern patterns over extensive features
+- Must demonstrate understanding of state machines, NoSQL, and modern React
+- French terminology is essential for authentic domain modeling
