@@ -85,22 +85,20 @@ export async function POST(request: NextRequest) {
 
     // Get current user (from session/auth)
     // This is a placeholder - implement based on your auth solution
-    const currentUser = { id: 'user-id', role: 'STUDENT' };
-
-    // Fetch etudiant data
-    const etudiant = await Etudiant.findById(currentUser.id);
+    // For now, use the first active etudiant from the database
+    const etudiant = await Etudiant.findOne({ actif: true }).sort({ createdAt: 1 });
     if (!etudiant) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: 'RES_001', message: 'Étudiant non trouvé' }
+          error: { code: 'RES_001', message: 'Aucun étudiant trouvé. Veuillez d\'abord exécuter le script de seed.' }
         },
         { status: 404 }
       );
     }
 
-    // Create demande with SOUMIS status
-    const demande = await Demande.create({
+    // Create demande with SOUMIS status (use new + save to trigger pre-save hooks)
+    const demande = new Demande({
       etudiant: {
         id: etudiant._id,
         nom: etudiant.nom,
@@ -123,6 +121,7 @@ export async function POST(request: NextRequest) {
       documents: [], // Documents added separately
       metadata: {}
     });
+    await demande.save(); // This triggers pre-save hook for numeroDemande
 
     // Auto-transition to RECU
     const workflow = new DemandeWorkflow(demande, {
