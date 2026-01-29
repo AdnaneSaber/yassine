@@ -1,3 +1,9 @@
+import dotenv from 'dotenv';
+import { resolve } from 'path';
+
+// Load environment variables from .env.local
+dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+
 import connectDB from '@/lib/db/mongodb';
 import { Etudiant, Demande, Utilisateur } from '@/lib/db/models';
 import bcrypt from 'bcryptjs';

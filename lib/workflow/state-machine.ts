@@ -238,28 +238,20 @@ export class DemandeWorkflow {
    * Send email notification for status change
    */
   private async sendNotification(newStatut: DemandeStatus): Promise<void> {
-    const templates: Partial<Record<DemandeStatus, string>> = {
-      RECU: 'demande-recue',
-      EN_COURS: 'demande-en-cours',
-      ATTENTE_INFO: 'demande-attente-info',
-      VALIDE: 'demande-validee',
-      REJETE: 'demande-rejetee',
-      TRAITE: 'demande-traitee'
-    };
+    // Import email service dynamically to avoid circular dependencies
+    try {
+      const { sendDemandeStatusEmail } = await import('@/lib/email');
 
-    const template = templates[newStatut];
-    if (!template) return;
+      // Send email immediately
+      const result = await sendDemandeStatusEmail(this.demande as any);
 
-    await Notification.create({
-      demandeId: this.demande._id,
-      type: 'EMAIL',
-      destinataire: this.demande.etudiant.email,
-      sujet: `Mise à jour de votre demande ${this.demande.numeroDemande}`,
-      contenu: `Votre demande est maintenant: ${STATUTS_META[newStatut].libelle}`,
-      templateUtilise: template,
-      statutEnvoi: 'EN_ATTENTE',
-      nbTentatives: 0
-    });
+      if (!result.success) {
+        console.error('Failed to send email notification:', result.error);
+      }
+    } catch (error) {
+      console.error('Error sending notification:', error);
+      // Don't throw - notification failures shouldn't break the workflow
+    }
   }
 }
 
