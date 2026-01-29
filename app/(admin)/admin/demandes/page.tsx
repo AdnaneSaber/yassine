@@ -60,9 +60,10 @@ async function getDemandes(searchParams: SearchParams) {
 export default async function AdminDemandesPage({
   searchParams,
 }: {
-  searchParams: SearchParams;
+  searchParams: Promise<SearchParams>;
 }) {
-  const { demandes, total, page, totalPages } = await getDemandes(searchParams);
+  const params = await searchParams;
+  const { demandes, total, page, totalPages } = await getDemandes(params);
 
   return (
     <div className="space-y-6">

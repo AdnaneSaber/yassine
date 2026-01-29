@@ -11,9 +11,9 @@ import connectDB from '@/lib/db/mongodb';
 import type { IDemande, IHistorique, UserRole } from '@/types/database';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function getDemandeDetail(id: string) {
@@ -47,7 +47,8 @@ async function getDemandeDetail(id: string) {
 }
 
 export default async function AdminDemandeDetailPage({ params }: PageProps) {
-  const data = await getDemandeDetail(params.id);
+  const { id } = await params;
+  const data = await getDemandeDetail(id);
 
   if (!data) {
     notFound();

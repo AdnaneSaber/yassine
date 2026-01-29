@@ -7,9 +7,9 @@ import { Demande } from '@/lib/db/models';
 import type { IDemande } from '@/types/database';
 
 interface DemandePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function getDemande(id: string): Promise<IDemande | null> {
@@ -31,7 +31,8 @@ async function getDemande(id: string): Promise<IDemande | null> {
 }
 
 export default async function DemandePage({ params }: DemandePageProps) {
-  const demande = await getDemande(params.id);
+  const { id } = await params;
+  const demande = await getDemande(id);
 
   if (!demande) {
     notFound();
