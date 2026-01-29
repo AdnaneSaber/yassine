@@ -33,14 +33,12 @@ export async function createDemandeAction(
 
     // Get current user (implement based on your auth)
     // This is a placeholder - replace with actual auth implementation
-    const currentUser = { id: 'user-id', role: 'STUDENT' };
-
-    // Fetch etudiant
-    const etudiant = await Etudiant.findById(currentUser.id);
+    // For now, use the first active etudiant from the database
+    const etudiant = await Etudiant.findOne({ actif: true }).sort({ createdAt: 1 });
     if (!etudiant) {
       return {
         success: false,
-        error: { code: 'RES_001', message: 'Étudiant non trouvé' }
+        error: { code: 'RES_001', message: 'Aucun étudiant trouvé. Veuillez d\'abord exécuter le script de seed.' }
       };
     }
 
@@ -217,7 +215,8 @@ export async function transitionDemandeAction(
 
     // Get current user (implement based on your auth)
     // This is a placeholder - replace with actual auth implementation
-    const currentUser = { id: 'admin-id', role: 'ADMIN' };
+    // For admin actions, using a placeholder ID is OK since it's just for logging
+    const currentUser = { id: 'admin-placeholder', role: 'ADMIN' };
 
     // Fetch demande
     const demande = await Demande.findById(demandeId);
