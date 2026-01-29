@@ -4,8 +4,8 @@ import type { IDemande, IDemandeDocument, DemandeStatus, Priorite, TypeDemandeCo
 const demandeSchema = new Schema<IDemandeDocument>({
   numeroDemande: {
     type: String,
-    required: true,
     unique: true
+    // Not required here - will be auto-generated in pre-save hook
   },
   etudiant: {
     id: {
