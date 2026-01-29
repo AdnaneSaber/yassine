@@ -1,9 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { getServerSession } from 'next-auth';
 import { z } from 'zod';
+import { authOptions } from '@/lib/auth/auth-options';
 import { createDemandeSchema, updateDemandeSchema, transitionDemandeSchema } from '@/lib/validators/demande';
-import { Demande, Etudiant } from '@/lib/db/models';
+import { Demande, Etudiant, Utilisateur } from '@/lib/db/models';
 import { DemandeWorkflow } from '@/lib/workflow/state-machine';
 import { STATUTS_META } from '@/lib/workflow/constants';
 import connectDB from '@/lib/db/mongodb';
@@ -21,6 +23,15 @@ export async function createDemandeAction(
   try {
     await connectDB();
 
+    // Get authenticated user session
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return {
+        success: false,
+        error: { code: 'AUTH_001', message: 'Non authentifié. Veuillez vous connecter.' }
+      };
+    }
+
     // Parse and validate form data
     const data = {
       typeDemande: formData.get('typeDemande'),
@@ -31,14 +42,23 @@ export async function createDemandeAction(
 
     const validated = createDemandeSchema.parse(data);
 
-    // Get current user (implement based on your auth)
-    // This is a placeholder - replace with actual auth implementation
-    // For now, use the first active etudiant from the database
-    const etudiant = await Etudiant.findOne({ actif: true }).sort({ createdAt: 1 });
-    if (!etudiant) {
+    // Get the authenticated user's etudiant record
+    const userId = (session.user as any).id;
+    const userType = (session.user as any).type;
+
+    // Only students can create demandes for themselves
+    if (userType !== 'student') {
       return {
         success: false,
-        error: { code: 'RES_001', message: 'Aucun étudiant trouvé. Veuillez d\'abord exécuter le script de seed.' }
+        error: { code: 'AUTH_002', message: 'Seuls les étudiants peuvent créer des demandes.' }
+      };
+    }
+
+    const etudiant = await Etudiant.findById(userId);
+    if (!etudiant || !etudiant.actif) {
+      return {
+        success: false,
+        error: { code: 'RES_001', message: 'Étudiant non trouvé ou inactif.' }
       };
     }
 
@@ -68,12 +88,18 @@ export async function createDemandeAction(
     });
     await demande.save(); // This triggers pre-save hook for numeroDemande
 
-    // Auto-transition to RECU
-    const workflow = new DemandeWorkflow(demande, {
-      userId: 'SYSTEM',
-      userRole: 'SYSTEM' as any
-    });
-    await workflow.transition('RECU');
+    // Auto-transition to RECU (don't fail creation if this fails)
+    try {
+      const workflow = new DemandeWorkflow(demande, {
+        userId: 'SYSTEM',
+        userRole: 'SYSTEM' as any
+      });
+      await workflow.transition('RECU');
+    } catch (workflowError) {
+      // Log workflow error but don't fail the creation
+      console.error('Workflow transition error (demande created successfully):', workflowError);
+      // The demande was created successfully, just couldn't auto-transition
+    }
 
     // Revalidate cache
     revalidatePath('/demandes');
@@ -204,20 +230,37 @@ export async function transitionDemandeAction(
   try {
     await connectDB();
 
+    // Get authenticated user session
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return {
+        success: false,
+        error: { code: 'AUTH_001', message: 'Non authentifié. Veuillez vous connecter.' }
+      };
+    }
+
+    const userId = (session.user as any).id;
+    const userRole = (session.user as any).role;
+
+    // Only admins can transition demande statuses
+    if (userRole !== 'ADMIN' && userRole !== 'SUPER_ADMIN') {
+      return {
+        success: false,
+        error: { code: 'AUTH_003', message: 'Autorisation requise. Accès administrateur nécessaire.' }
+      };
+    }
+
     // Parse and validate
     const data = {
       newStatut: formData.get('newStatut'),
       commentaire: formData.get('commentaire') || undefined,
       motifRefus: formData.get('motifRefus') || undefined,
-      traiteParId: formData.get('traiteParId') || undefined
+      traiteParId: formData.get('traiteParId') || userId // Use current admin's ID if not provided
     };
 
     const validated = transitionDemandeSchema.parse(data);
 
-    // Get current user (implement based on your auth)
-    // This is a placeholder - replace with actual auth implementation
-    // For admin actions, using a placeholder ID is OK since it's just for logging
-    const currentUser = { id: 'admin-placeholder', role: 'ADMIN' };
+    const currentUser = { id: userId, role: userRole };
 
     // Fetch demande
     const demande = await Demande.findById(demandeId);

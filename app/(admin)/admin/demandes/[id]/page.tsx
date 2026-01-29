@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/auth-options';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { DemandeActions } from '@/components/admin/demande-actions';
 import { Demande, Historique } from '@/lib/db/models';
 import connectDB from '@/lib/db/mongodb';
-import type { IDemande, IHistorique } from '@/types/database';
+import type { IDemande, IHistorique, UserRole } from '@/types/database';
 
 interface PageProps {
   params: {
@@ -52,6 +55,10 @@ export default async function AdminDemandeDetailPage({ params }: PageProps) {
 
   const { demande, history } = data;
 
+  // Get session to determine user role
+  const session = await getServerSession(authOptions);
+  const userRole = (session?.user as any)?.role as UserRole || 'ADMIN';
+
   return (
     <div className="space-y-6">
       {/* Back Button */}
@@ -76,6 +83,20 @@ export default async function AdminDemandeDetailPage({ params }: PageProps) {
           {demande.statut.libelle}
         </Badge>
       </div>
+
+      {/* Action Buttons */}
+      <Card className="p-4 bg-blue-50 border-blue-200">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium text-gray-700">
+            Actions administrateur
+          </p>
+          <DemandeActions
+            demande={demande}
+            userRole={userRole}
+            redirectAfterDelete={true}
+          />
+        </div>
+      </Card>
 
       {/* Student Info */}
       <Card className="p-6">
