@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
 import {
   Form,
   FormControl,
@@ -20,11 +19,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { toast } from 'sonner';
+import { demandeToasts, appToasts } from '@/lib/utils/toast';
+import { FormErrors } from '@/components/ui/error-display';
 
 export function DemandeForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [formError, setFormError] = useState<string | null>(null);
 
   const form = useForm<CreateDemandeInput>({
     resolver: zodResolver(createDemandeSchema),
@@ -33,10 +34,14 @@ export function DemandeForm() {
       objet: '',
       description: '',
       priorite: 'NORMALE'
-    }
+    },
+    mode: 'onBlur', // Validate on blur for better UX
   });
 
   const onSubmit = async (data: CreateDemandeInput) => {
+    // Clear any previous form-level errors
+    setFormError(null);
+
     startTransition(async () => {
       try {
         const formData = new FormData();
@@ -48,21 +53,36 @@ export function DemandeForm() {
         const result = await createDemandeAction(formData);
 
         if (result.success) {
-          toast.success('Demande créée avec succès');
+          demandeToasts.created();
+          // Reset form after successful submission
+          form.reset();
+          // Navigate to demandes list
           router.push('/demandes');
+          router.refresh();
         } else {
-          toast.error(result.error?.message || 'Une erreur est survenue');
+          const errorMessage = result.error?.message || 'Une erreur est survenue';
+          setFormError(errorMessage);
+          demandeToasts.createdError(errorMessage);
         }
       } catch (err) {
         console.error('Error creating demande:', err);
-        toast.error('Une erreur est survenue lors de la création de la demande');
+        const errorMessage = err instanceof Error
+          ? err.message
+          : 'Une erreur inattendue est survenue';
+        setFormError(errorMessage);
+        demandeToasts.createdError(errorMessage);
       }
     });
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
+        {/* Form-level errors */}
+        {formError && (
+          <FormErrors errors={formError} title="Erreur de soumission" />
+        )}
+
         {/* Type de demande */}
         <FormField
           control={form.control}
@@ -100,13 +120,14 @@ export function DemandeForm() {
             <FormItem>
               <FormLabel>Objet *</FormLabel>
               <FormControl>
-                <Input 
+                <Input
                   placeholder="Objet de la demande"
                   maxLength={255}
                   {...field}
+                  aria-describedby="objet-description objet-error"
                 />
               </FormControl>
-              <FormDescription>
+              <FormDescription id="objet-description">
                 Résumez votre demande en quelques mots (5-255 caractères)
               </FormDescription>
               <FormMessage />
@@ -122,13 +143,14 @@ export function DemandeForm() {
             <FormItem>
               <FormLabel>Description *</FormLabel>
               <FormControl>
-                <Textarea 
+                <Textarea
                   placeholder="Décrivez votre demande en détail..."
                   rows={5}
                   {...field}
+                  aria-describedby="description-description description-error"
                 />
               </FormControl>
-              <FormDescription>
+              <FormDescription id="description-description">
                 Fournissez tous les détails nécessaires pour traiter votre demande (minimum 10 caractères)
               </FormDescription>
               <FormMessage />
@@ -166,17 +188,36 @@ export function DemandeForm() {
 
         {/* Actions */}
         <div className="flex gap-4">
-          <Button type="submit" disabled={isPending}>
+          <Button
+            type="submit"
+            disabled={isPending || !form.formState.isValid}
+            className="min-w-[180px]"
+          >
             {isPending ? 'Envoi en cours...' : 'Soumettre la demande'}
           </Button>
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.back()}
+            onClick={() => {
+              if (form.formState.isDirty) {
+                if (confirm('Voulez-vous vraiment annuler ? Les modifications seront perdues.')) {
+                  router.back();
+                }
+              } else {
+                router.back();
+              }
+            }}
             disabled={isPending}
           >
             Annuler
           </Button>
+        </div>
+
+        {/* Form status message for screen readers */}
+        <div className="sr-only" role="status" aria-live="polite">
+          {isPending && 'Envoi de la demande en cours...'}
+          {formError && `Erreur: ${formError}`}
+          {form.formState.isSubmitSuccessful && 'Demande créée avec succès'}
         </div>
       </form>
     </Form>
