@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/auth-options';
 import { queryDemandesSchema, createDemandeSchema } from '@/lib/validators/demande';
 import { handleApiError } from '@/lib/api/error-handler';
 import { Demande, Etudiant } from '@/lib/db/models';
@@ -80,18 +82,42 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const body = await request.json();
-    const validated = createDemandeSchema.parse(body);
-
-    // Get current user (from session/auth)
-    // This is a placeholder - implement based on your auth solution
-    // For now, use the first active etudiant from the database
-    const etudiant = await Etudiant.findOne({ actif: true }).sort({ createdAt: 1 });
-    if (!etudiant) {
+    // Get authenticated user session
+    const session = await getServerSession(authOptions);
+    if (!session) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: 'RES_001', message: 'Aucun étudiant trouvé. Veuillez d\'abord exécuter le script de seed.' }
+          error: { code: 'AUTH_001', message: 'Non authentifié. Veuillez vous connecter.' }
+        },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const validated = createDemandeSchema.parse(body);
+
+    // Get the authenticated user's etudiant record
+    const userId = (session.user as any).id;
+    const userType = (session.user as any).type;
+
+    // Only students can create demandes for themselves
+    if (userType !== 'student') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: 'AUTH_002', message: 'Seuls les étudiants peuvent créer des demandes.' }
+        },
+        { status: 403 }
+      );
+    }
+
+    const etudiant = await Etudiant.findById(userId);
+    if (!etudiant || !etudiant.actif) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: 'RES_001', message: 'Étudiant non trouvé ou inactif.' }
         },
         { status: 404 }
       );
@@ -123,12 +149,18 @@ export async function POST(request: NextRequest) {
     });
     await demande.save(); // This triggers pre-save hook for numeroDemande
 
-    // Auto-transition to RECU
-    const workflow = new DemandeWorkflow(demande, {
-      userId: 'SYSTEM',
-      userRole: 'SYSTEM' as any
-    });
-    await workflow.transition('RECU');
+    // Auto-transition to RECU (don't fail creation if this fails)
+    try {
+      const workflow = new DemandeWorkflow(demande, {
+        userId: 'SYSTEM',
+        userRole: 'SYSTEM' as any
+      });
+      await workflow.transition('RECU');
+    } catch (workflowError) {
+      // Log workflow error but don't fail the creation
+      console.error('Workflow transition error (demande created successfully):', workflowError);
+      // The demande was created successfully, just couldn't auto-transition
+    }
 
     return NextResponse.json(
       { success: true, data: demande },
