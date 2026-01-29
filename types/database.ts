@@ -73,6 +73,7 @@ export interface StatutRef {
 
 // Main Document Interfaces
 export interface IDemande {
+  _id?: Types.ObjectId | string;
   numeroDemande: string;
   etudiant: EtudiantRef;
   typeDemande: TypeDemandeInfo;
