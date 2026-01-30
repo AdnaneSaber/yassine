@@ -10,6 +10,19 @@ import { Demande, Historique } from '@/lib/db/models';
 import connectDB from '@/lib/db/mongodb';
 import type { IDemande, IHistorique, UserRole } from '@/types/database';
 
+// Serialized types for Next.js page props
+type SerializedDemande = Omit<IDemande, '_id' | 'createdAt' | 'updatedAt' | 'dateTraitement'> & {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  dateTraitement?: string;
+};
+
+type SerializedHistorique = Omit<IHistorique, '_id' | 'createdAt'> & {
+  _id: string;
+  createdAt: string;
+};
+
 async function getDemandeDetail(id: string) {
   await connectDB();
 
@@ -31,12 +44,12 @@ async function getDemandeDetail(id: string) {
       createdAt: demande.createdAt.toISOString(),
       updatedAt: demande.updatedAt.toISOString(),
       dateTraitement: demande.dateTraitement?.toISOString(),
-    },
+    } as SerializedDemande,
     history: history.map((h) => ({
       ...h,
       _id: h._id?.toString(),
       createdAt: h.createdAt.toISOString(),
-    })),
+    })) as SerializedHistorique[],
   };
 }
 
@@ -90,7 +103,7 @@ export default async function AdminDemandeDetailPage({
             Actions administrateur
           </p>
           <DemandeActions
-            demande={demande}
+            demande={demande as any}
             userRole={userRole}
             redirectAfterDelete={true}
           />
