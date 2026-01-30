@@ -13,46 +13,51 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email et mot de passe requis');
-        }
-
-        await connectDB();
-
-        // Try to find user in Utilisateurs (admins)
-        const user = await Utilisateur.findOne({ email: credentials.email, actif: true });
-
-        if (user) {
-          const isValid = await user.comparePassword(credentials.password);
-          if (!isValid) {
-            throw new Error('Email ou mot de passe incorrect');
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            return null;
           }
 
-          return {
-            id: user._id.toString(),
-            email: user.email,
-            name: `${user.prenom} ${user.nom}`,
-            role: user.role as string,
-            type: 'admin'
-          };
+          await connectDB();
+
+          // Try to find user in Utilisateurs (admins)
+          const user = await Utilisateur.findOne({ email: credentials.email, actif: true });
+
+          if (user) {
+            const isValid = await user.comparePassword(credentials.password);
+            if (!isValid) {
+              return null;
+            }
+
+            return {
+              id: user._id.toString(),
+              email: user.email,
+              name: `${user.prenom} ${user.nom}`,
+              role: user.role as string,
+              type: 'admin'
+            };
+          }
+
+          // Try to find in Etudiants (students) - for now, no password check
+          const etudiant = await Etudiant.findOne({ email: credentials.email, actif: true });
+
+          if (etudiant) {
+            // For students, accept any password for now (or implement student password field)
+            return {
+              id: etudiant._id.toString(),
+              email: etudiant.email,
+              name: `${etudiant.prenom} ${etudiant.nom}`,
+              role: 'STUDENT' as string,
+              type: 'student',
+              matricule: etudiant.matricule
+            };
+          }
+
+          return null;
+        } catch (error) {
+          console.error('Auth error:', error);
+          return null;
         }
-
-        // Try to find in Etudiants (students) - for now, no password check
-        const etudiant = await Etudiant.findOne({ email: credentials.email, actif: true });
-
-        if (etudiant) {
-          // For students, accept any password for now (or implement student password field)
-          return {
-            id: etudiant._id.toString(),
-            email: etudiant.email,
-            name: `${etudiant.prenom} ${etudiant.nom}`,
-            role: 'STUDENT' as string,
-            type: 'student',
-            matricule: etudiant.matricule
-          };
-        }
-
-        throw new Error('Utilisateur non trouvé');
       }
     })
   ],
@@ -84,5 +89,5 @@ export const authOptions: NextAuthOptions = {
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || 'your-secret-key-change-in-production',
+  secret: process.env.NEXTAUTH_SECRET,
 };
