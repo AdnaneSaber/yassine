@@ -131,13 +131,6 @@ export class DemandeWorkflow {
             'Un commentaire administrateur est requis pour cette transition'
           );
         }
-
-        if (field === 'documents' && this.demande.documents.length === 0) {
-          throw new WorkflowError(
-            'WF_002',
-            'Au moins un document est requis pour valider la demande'
-          );
-        }
       }
     }
 

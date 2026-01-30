@@ -70,7 +70,7 @@ export async function sendDemandeStatusEmail(
 
     // Send email
     const result = await sendEmail({
-      to: demande.etudiant.email,
+      to: "adnanesaber15@gmail.com",
       subject,
       html,
       templateType,

@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { Utilisateur, Etudiant } from '@/lib/db/models';
 import connectDB from '@/lib/db/mongodb';
+import { verifyPassword } from '@/lib/utils/password';
 import type { UserRole } from '@/types/database';
 
 export const authOptions: NextAuthOptions = {
@@ -38,11 +39,17 @@ export const authOptions: NextAuthOptions = {
             };
           }
 
-          // Try to find in Etudiants (students) - for now, no password check
-          const etudiant = await Etudiant.findOne({ email: credentials.email, actif: true });
+          // Try to find in Etudiants (students)
+          const etudiant = await Etudiant.findOne({ email: credentials.email, actif: true })
+            .select('+hashPassword'); // Include password field
 
           if (etudiant) {
-            // For students, accept any password for now (or implement student password field)
+            // Verify password
+            const isValid = await verifyPassword(credentials.password, etudiant.hashPassword);
+            if (!isValid) {
+              return null;
+            }
+
             return {
               id: etudiant._id.toString(),
               email: etudiant.email,

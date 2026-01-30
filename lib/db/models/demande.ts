@@ -40,7 +40,8 @@ const demandeSchema = new Schema<IDemandeDocument>({
       enum: ['SOUMIS', 'RECU', 'EN_COURS', 'ATTENTE_INFO', 'VALIDE', 'REJETE', 'TRAITE', 'ARCHIVE']
     },
     libelle: { type: String, required: true },
-    couleur: { type: String }
+    couleur: { type: String },
+    estFinal: { type: Boolean }
   },
   objet: {
     type: String,
@@ -79,6 +80,10 @@ const demandeSchema = new Schema<IDemandeDocument>({
   metadata: {
     type: Schema.Types.Mixed,
     default: {}
+  },
+  actif: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true,

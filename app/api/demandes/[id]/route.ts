@@ -95,10 +95,7 @@ export async function DELETE(
       );
     }
 
-    return NextResponse.json(
-      { success: true, data: null },
-      { status: 204 }
-    );
+    return NextResponse.json({ success: true, data: null });
   } catch (error) {
     return handleApiError(error);
   }

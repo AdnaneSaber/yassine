@@ -104,7 +104,7 @@ export const TRANSITION_REQUIREMENTS: Partial<Record<DemandeStatus, TransitionRe
     requiredFields: ['commentaireAdmin']
   },
   VALIDE: {
-    requiredFields: ['documents'] // Must have at least one document
+    optionalFields: ['documents'] // Documents are optional for validation
   }
 };
 

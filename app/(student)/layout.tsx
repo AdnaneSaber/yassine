@@ -1,13 +1,33 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
 import { Button } from '@/components/ui/button';
 import { SignOutButton } from '@/components/auth/sign-out-button';
+import { StudentProfileBadge } from '@/components/student/student-profile-badge';
+import { authOptions } from '@/lib/auth/auth-options';
+import { Etudiant } from '@/lib/db/models';
+import connectDB from '@/lib/db/mongodb';
 
 interface StudentLayoutProps {
   children: ReactNode;
 }
 
-export default function StudentLayout({ children }: StudentLayoutProps) {
+async function getStudentInfo() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user || (session.user as any).type !== 'student') {
+    return null;
+  }
+
+  await connectDB();
+  const student = await Etudiant.findById((session.user as any).id)
+    .select('niveauEtude filiere nom prenom')
+    .lean();
+
+  return student;
+}
+
+export default async function StudentLayout({ children }: StudentLayoutProps) {
+  const student = await getStudentInfo();
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -28,6 +48,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              {student && <StudentProfileBadge student={student as any} />}
               <Link href="/demandes/new">
                 <Button>Nouvelle demande</Button>
               </Link>

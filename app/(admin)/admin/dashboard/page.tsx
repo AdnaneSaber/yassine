@@ -17,26 +17,43 @@ import type { IDemande } from '@/types/database';
 async function getDashboardData() {
   await connectDB();
 
-  // Get statistics
-  const total = await Demande.countDocuments({ actif: true });
+  // Get statistics (include all active demands, including those without actif field set yet)
+  const total = await Demande.countDocuments({ $or: [{ actif: true }, { actif: { $exists: false } }] });
   const enCours = await Demande.countDocuments({
-    actif: true,
+    $or: [{ actif: true }, { actif: { $exists: false } }],
     'statut.code': { $in: ['RECU', 'EN_COURS', 'ATTENTE_INFO'] },
   });
   const traites = await Demande.countDocuments({
-    actif: true,
+    $or: [{ actif: true }, { actif: { $exists: false } }],
     'statut.code': 'TRAITE',
   });
   const rejetes = await Demande.countDocuments({
-    actif: true,
+    $or: [{ actif: true }, { actif: { $exists: false } }],
     'statut.code': 'REJETE',
   });
 
-  // Get recent demandes
-  const recentDemandes = await Demande.find({ actif: true })
-    .sort({ createdAt: -1 })
-    .limit(10)
+  // Get recent demandes - sorted by open status (non-final first), then priority, then date
+  const allDemandes = await Demande.find({ $or: [{ actif: true }, { actif: { $exists: false } }] })
     .lean<IDemande[]>();
+
+  // Sort in JavaScript: open (non-final) first, then by priority, then by date
+  const priorityOrder = { URGENTE: 4, HAUTE: 3, NORMALE: 2, BASSE: 1 };
+  const recentDemandes = allDemandes
+    .sort((a, b) => {
+      // First: sort by open status (non-final first)
+      const aIsFinal = a.statut.estFinal;
+      const bIsFinal = b.statut.estFinal;
+      if (aIsFinal !== bIsFinal) return aIsFinal ? 1 : -1;
+
+      // Second: sort by priority (higher priority first)
+      const aPriority = priorityOrder[a.priorite as keyof typeof priorityOrder] || 0;
+      const bPriority = priorityOrder[b.priorite as keyof typeof priorityOrder] || 0;
+      if (aPriority !== bPriority) return bPriority - aPriority;
+
+      // Third: sort by creation date (newest first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    })
+    .slice(0, 10);
 
   return {
     stats: { total, enCours, traites, rejetes },

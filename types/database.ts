@@ -47,6 +47,7 @@ export interface StatutInfo {
   code: DemandeStatus;
   libelle: string;
   couleur: string;
+  estFinal?: boolean;
 }
 
 export interface DocumentInfo {
@@ -87,6 +88,7 @@ export interface IDemande {
   dateTraitement?: Date;
   traiteParId?: Types.ObjectId;
   metadata: Record<string, any>;
+  actif?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -97,6 +99,7 @@ export interface IEtudiant {
   nom: string;
   prenom: string;
   email: string;
+  hashPassword: string;
   dateNaissance?: Date;
   telephone?: string;
   adresse?: string;

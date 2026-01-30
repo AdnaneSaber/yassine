@@ -29,6 +29,11 @@ const etudiantSchema = new Schema<IEtudiantDocument>({
     trim: true,
     match: /^\S+@\S+\.\S+$/
   },
+  hashPassword: {
+    type: String,
+    required: true,
+    select: false // Don't return password by default
+  },
   dateNaissance: {
     type: Date
   },

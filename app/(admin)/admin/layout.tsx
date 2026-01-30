@@ -29,6 +29,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     Toutes les demandes
                   </Button>
                 </Link>
+                <Link href="/admin/students">
+                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+                    Étudiants
+                  </Button>
+                </Link>
               </div>
             </div>
             <div className="flex items-center gap-4">
