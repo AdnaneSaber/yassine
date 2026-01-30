@@ -10,12 +10,6 @@ import { Demande, Historique } from '@/lib/db/models';
 import connectDB from '@/lib/db/mongodb';
 import type { IDemande, IHistorique, UserRole } from '@/types/database';
 
-interface PageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
 async function getDemandeDetail(id: string) {
   await connectDB();
 
@@ -46,7 +40,11 @@ async function getDemandeDetail(id: string) {
   };
 }
 
-export default async function AdminDemandeDetailPage({ params }: PageProps) {
+export default async function AdminDemandeDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const data = await getDemandeDetail(id);
 
