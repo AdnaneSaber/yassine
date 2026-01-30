@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { SignOutButton } from '@/components/auth/sign-out-button';
 
 interface StudentLayoutProps {
   children: ReactNode;
@@ -30,6 +31,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
               <Link href="/demandes/new">
                 <Button>Nouvelle demande</Button>
               </Link>
+              <SignOutButton />
             </div>
           </div>
         </div>

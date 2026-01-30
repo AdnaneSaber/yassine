@@ -21,7 +21,7 @@ async function getDemandes(searchParams: SearchParams) {
   const skip = (page - 1) * limit;
 
   // Build query
-  const query: any = { actif: true };
+  const query: any = {};
 
   if (searchParams.statut) {
     query['statut.code'] = searchParams.statut;

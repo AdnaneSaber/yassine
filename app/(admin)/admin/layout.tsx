@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { SignOutButton } from '@/components/auth/sign-out-button';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -34,6 +35,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <div className="text-sm text-gray-600">
                 Administrateur
               </div>
+              <SignOutButton />
             </div>
           </div>
         </div>
