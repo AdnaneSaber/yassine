@@ -8,11 +8,12 @@ import connectDB from '@/lib/db/mongodb';
 // POST /api/demandes/[id]/transition - Change demande status
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
+    const { id } = await params;
     const body = await request.json();
     const validated = transitionDemandeSchema.parse(body);
 
@@ -21,7 +22,7 @@ export async function POST(
     const currentUser = { id: 'admin-id', role: 'ADMIN' };
 
     // Fetch demande
-    const demande = await Demande.findById(params.id);
+    const demande = await Demande.findById(id);
     if (!demande) {
       return NextResponse.json(
         {
@@ -44,7 +45,7 @@ export async function POST(
     await workflow.transition(validated.newStatut);
 
     // Reload demande to get updated state
-    const updatedDemande = await Demande.findById(params.id);
+    const updatedDemande = await Demande.findById(id);
 
     return NextResponse.json({ success: true, data: updatedDemande });
   } catch (error) {
