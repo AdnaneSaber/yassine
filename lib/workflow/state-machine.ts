@@ -221,8 +221,8 @@ export class DemandeWorkflow {
       commentaire: this.context.commentaire
     };
 
-    // Add user info if available
-    if (this.context.userId) {
+    // Add user info only if userId is not SYSTEM (to avoid ObjectId cast error)
+    if (this.context.userId && this.context.userId !== 'SYSTEM') {
       // In a real implementation, fetch user from database
       historiqueData.utilisateur = {
         id: this.context.userId,
