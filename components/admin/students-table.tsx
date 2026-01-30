@@ -55,7 +55,7 @@ export function StudentsTable({ students }: StudentsTableProps) {
           </TableHeader>
           <TableBody>
             {students.map((student) => (
-              <TableRow key={student._id}>
+              <TableRow key={student._id?.toString()}>
                 <TableCell className="font-medium">
                   {student.matricule}
                 </TableCell>
