@@ -1,17 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { cookies } from 'next/headers';
 import connectDB from '@/lib/db/mongodb';
 import { Demande } from '@/lib/db/models';
 import { sendDemandeStatusEmail, sendCustomDemandeEmail } from '@/lib/email';
 import { authOptions } from '@/lib/auth/auth-options';
+import { jwtDecrypt } from 'jose';
+
+const secret = Buffer.from(
+  process.env.NEXTAUTH_SECRET || 'default-secret-for-development',
+  'base64'
+);
+
+async function getSessionFromToken() {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('next-auth.session-token')?.value;
+    console.log('Token found:', !!token);
+
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const decrypted = await jwtDecrypt(token, secret);
+      console.log('Decrypted payload:', decrypted);
+      return decrypted;
+    } catch (error) {
+      console.error('Decryption error:', error);
+      return null;
+    }
+  } catch (error) {
+    console.error('Cookie read error:', error);
+    return null;
+  }
+}
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user || session.user.role !== 'ADMIN') {
+    // Try getServerSession first
+    let session = await getServerSession(authOptions);
+    console.log('getServerSession result:', session);
+
+    // Fallback to manual token decryption
+    if (!session) {
+      console.log('Falling back to manual token decryption');
+      const tokenData = await getSessionFromToken();
+      if (tokenData) {
+        session = { user: tokenData };
+      }
+    }
+
+    console.log('Final session:', session);
+    
+    if (!session?.user || (session.user as any).role !== 'SUPER_ADMIN') {
+      console.log('Unauthorized: no session or not admin');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

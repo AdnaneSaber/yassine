@@ -36,6 +36,7 @@ export function DemandeActions({
       const response = await fetch(`/api/demandes/${demande._id}/send-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ type: 'status' })
       });
 
