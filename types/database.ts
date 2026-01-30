@@ -73,7 +73,7 @@ export interface StatutRef {
 
 // Main Document Interfaces
 export interface IDemande {
-  _id?: Types.ObjectId | string;
+  _id?: Types.ObjectId;
   numeroDemande: string;
   etudiant: EtudiantRef;
   typeDemande: TypeDemandeInfo;
@@ -92,7 +92,7 @@ export interface IDemande {
 }
 
 export interface IEtudiant {
-  _id?: Types.ObjectId | string;
+  _id?: Types.ObjectId;
   matricule: string;
   nom: string;
   prenom: string;
@@ -108,7 +108,7 @@ export interface IEtudiant {
 }
 
 export interface IHistorique {
-  _id?: Types.ObjectId | string;
+  _id?: Types.ObjectId;
   demandeId: Types.ObjectId;
   numeroDemandeRef: string;
   statutAncien?: StatutRef;
@@ -121,7 +121,7 @@ export interface IHistorique {
 }
 
 export interface IUtilisateur {
-  _id?: Types.ObjectId | string;
+  _id?: Types.ObjectId;
   email: string;
   hashPassword: string;
   nom: string;
@@ -134,7 +134,7 @@ export interface IUtilisateur {
 }
 
 export interface INotification {
-  _id?: Types.ObjectId | string;
+  _id?: Types.ObjectId;
   demandeId: Types.ObjectId;
   type: 'EMAIL' | 'SMS';
   destinataire: string;
@@ -150,10 +150,10 @@ export interface INotification {
 }
 
 // Mongoose Document Types
-export interface IDemandeDocument extends IDemande, Document {}
-export interface IEtudiantDocument extends IEtudiant, Document {}
-export interface IHistoriqueDocument extends IHistorique, Document {}
-export interface IUtilisateurDocument extends IUtilisateur, Document {
+export interface IDemandeDocument extends Omit<IDemande, '_id'>, Document {}
+export interface IEtudiantDocument extends Omit<IEtudiant, '_id'>, Document {}
+export interface IHistoriqueDocument extends Omit<IHistorique, '_id'>, Document {}
+export interface IUtilisateurDocument extends Omit<IUtilisateur, '_id'>, Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
-export interface INotificationDocument extends INotification, Document {}
+export interface INotificationDocument extends Omit<INotification, '_id'>, Document {}
