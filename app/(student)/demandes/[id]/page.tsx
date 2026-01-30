@@ -6,12 +6,6 @@ import connectDB from '@/lib/db/mongodb';
 import { Demande } from '@/lib/db/models';
 import type { IDemande } from '@/types/database';
 
-interface DemandePageProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
 async function getDemande(id: string): Promise<IDemande | null> {
   try {
     await connectDB();
@@ -30,7 +24,11 @@ async function getDemande(id: string): Promise<IDemande | null> {
   }
 }
 
-export default async function DemandePage({ params }: DemandePageProps) {
+export default async function DemandePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const demande = await getDemande(id);
 

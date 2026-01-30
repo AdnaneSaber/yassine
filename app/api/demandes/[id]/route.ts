@@ -7,12 +7,13 @@ import connectDB from '@/lib/db/mongodb';
 // GET /api/demandes/[id] - Get single demande
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
-    const demande = await Demande.findById(params.id);
+    const { id } = await params;
+    const demande = await Demande.findById(id);
 
     if (!demande) {
       return NextResponse.json(
@@ -21,7 +22,7 @@ export async function GET(
           error: {
             code: 'RES_001',
             message: 'Demande non trouvée',
-            details: { id: params.id }
+            details: { id }
           }
         },
         { status: 404 }
@@ -37,16 +38,17 @@ export async function GET(
 // PATCH /api/demandes/[id] - Update demande
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
+    const { id } = await params;
     const body = await request.json();
     const validated = updateDemandeSchema.parse(body);
 
     const demande = await Demande.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: validated },
       { new: true, runValidators: true }
     );
@@ -70,14 +72,15 @@ export async function PATCH(
 // DELETE /api/demandes/[id] - Soft delete demande
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
 
+    const { id } = await params;
     // Soft delete by setting actif = false
     const demande = await Demande.findByIdAndUpdate(
-      params.id,
+      id,
       { $set: { actif: false } },
       { new: true }
     );

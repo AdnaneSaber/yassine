@@ -110,7 +110,7 @@ export default async function AdminDemandesPage({
         <div className="flex justify-center gap-2">
           {page > 1 && (
             <a
-              href={`?page=${page - 1}${searchParams.statut ? `&statut=${searchParams.statut}` : ''}${searchParams.priorite ? `&priorite=${searchParams.priorite}` : ''}${searchParams.typeDemande ? `&typeDemande=${searchParams.typeDemande}` : ''}`}
+              href={`?page=${page - 1}${params.statut ? `&statut=${params.statut}` : ''}${params.priorite ? `&priorite=${params.priorite}` : ''}${params.typeDemande ? `&typeDemande=${params.typeDemande}` : ''}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               Précédent
@@ -118,7 +118,7 @@ export default async function AdminDemandesPage({
           )}
           {page < totalPages && (
             <a
-              href={`?page=${page + 1}${searchParams.statut ? `&statut=${searchParams.statut}` : ''}${searchParams.priorite ? `&priorite=${searchParams.priorite}` : ''}${searchParams.typeDemande ? `&typeDemande=${searchParams.typeDemande}` : ''}`}
+              href={`?page=${page + 1}${params.statut ? `&statut=${params.statut}` : ''}${params.priorite ? `&priorite=${params.priorite}` : ''}${params.typeDemande ? `&typeDemande=${params.typeDemande}` : ''}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               Suivant
