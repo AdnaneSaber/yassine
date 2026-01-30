@@ -318,7 +318,9 @@ export async function withToast<T>(
     error: string | ((error: any) => string);
   }
 ): Promise<T> {
-  return toast.promise(operation(), messages);
+  const promise = operation();
+  toast.promise(promise, messages);
+  return promise;
 }
 
 /**

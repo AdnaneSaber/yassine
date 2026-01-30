@@ -102,7 +102,7 @@ export default async function AdminDemandesPage({
           </Card>
         }
       >
-        <DemandesTable demandes={demandes} userRole="ADMIN" />
+        <DemandesTable demandes={demandes as any} userRole="ADMIN" />
       </Suspense>
 
       {/* Pagination */}

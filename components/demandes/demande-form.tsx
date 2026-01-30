@@ -19,7 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { demandeToasts, appToasts } from '@/lib/utils/toast';
+import { demandeToasts } from '@/lib/utils/toast';
 import { FormErrors } from '@/components/ui/error-display';
 
 export function DemandeForm() {
@@ -48,7 +48,7 @@ export function DemandeForm() {
         formData.append('typeDemande', data.typeDemande);
         formData.append('objet', data.objet);
         formData.append('description', data.description);
-        formData.append('priorite', data.priorite);
+        formData.append('priorite', data.priorite ?? 'NORMALE');
 
         const result = await createDemandeAction(formData);
 

@@ -1,3 +1,4 @@
+import { error } from 'console';
 import { z } from 'zod';
 
 // Type Demande Enum with custom error message
@@ -8,12 +9,12 @@ const TypeDemandeEnum = z.enum([
   'DUPLICATA_CARTE',
   'CONVENTION_STAGE'
 ], {
-  errorMap: () => ({ message: 'Veuillez sélectionner un type de demande valide' })
+  message: 'Veuillez sélectionner un type de demande valide'
 });
 
 // Priorite Enum with custom error message
 const PrioriteEnum = z.enum(['BASSE', 'NORMALE', 'HAUTE', 'URGENTE'], {
-  errorMap: () => ({ message: 'Veuillez sélectionner une priorité valide' })
+  message: 'Veuillez sélectionner une priorité valide'
 });
 
 // Statut Enum with custom error message
@@ -27,7 +28,7 @@ const StatutEnum = z.enum([
   'TRAITE',
   'ARCHIVE'
 ], {
-  errorMap: () => ({ message: 'Veuillez sélectionner un statut valide' })
+  message: 'Veuillez sélectionner un statut valide'
 });
 
 // Statut Transition Enum (excludes SOUMIS as it's initial state only)
@@ -40,7 +41,7 @@ const StatutTransitionEnum = z.enum([
   'TRAITE',
   'ARCHIVE'
 ], {
-  errorMap: () => ({ message: 'Veuillez sélectionner un statut de transition valide' })
+  message: 'Veuillez sélectionner un statut de transition valide'
 });
 
 // Helper function to normalize whitespace
@@ -50,8 +51,7 @@ const normalizeString = (str: string) => str.trim().replace(/\s+/g, ' ');
 export const createDemandeSchema = z.object({
   typeDemande: TypeDemandeEnum,
   objet: z.string({
-    required_error: "L'objet de la demande est requis",
-    invalid_type_error: "L'objet doit être une chaîne de caractères"
+    error: "L'objet de la demande est requis",
   })
     .min(1, "L'objet ne peut pas être vide")
     .transform(normalizeString)
@@ -62,8 +62,7 @@ export const createDemandeSchema = z.object({
         .regex(/^[a-zA-ZÀ-ÿ0-9\s\-',.:!?()]+$/, "L'objet contient des caractères non autorisés")
     ),
   description: z.string({
-    required_error: 'La description est requise',
-    invalid_type_error: 'La description doit être une chaîne de caractères'
+    error: 'La description est requise',
   })
     .min(1, 'La description ne peut pas être vide')
     .transform(normalizeString)
@@ -74,7 +73,7 @@ export const createDemandeSchema = z.object({
     ),
   priorite: PrioriteEnum.default('NORMALE')
 })
-  .strict({ message: 'Des champs non autorisés ont été détectés' })
+  .strict()
   .refine(
     (data) => {
       // Validate that objet and description are not the same
@@ -86,7 +85,10 @@ export const createDemandeSchema = z.object({
     }
   );
 
-export type CreateDemandeInput = z.infer<typeof createDemandeSchema>;
+// Use Zod's input type here so form libraries (resolver) receive the
+// pre-transform/default shape. This prevents optional/default mismatches
+// between `zodResolver` and the generic used with `useForm`.
+export type CreateDemandeInput = z.input<typeof createDemandeSchema>;
 
 // Update Demande Schema with partial fields
 export const updateDemandeSchema = z.object({
@@ -112,20 +114,20 @@ export const updateDemandeSchema = z.object({
     .optional(),
   priorite: PrioriteEnum.optional()
 })
-  .strict({ message: 'Des champs non autorisés ont été détectés' });
+  .strict();
 
 export type UpdateDemandeInput = z.infer<typeof updateDemandeSchema>;
 
 // Query Demandes Schema with enhanced validation
 export const queryDemandesSchema = z.object({
   page: z.coerce.number({
-    invalid_type_error: 'Le numéro de page doit être un nombre'
+    error: 'Le numéro de page doit être un nombre'
   })
     .int('Le numéro de page doit être un entier')
     .positive('Le numéro de page doit être positif')
     .default(1),
   limit: z.coerce.number({
-    invalid_type_error: 'La limite doit être un nombre'
+    error: 'La limite doit être un nombre'
   })
     .int('La limite doit être un entier')
     .min(1, 'La limite doit être au moins 1')
@@ -146,7 +148,7 @@ export const queryDemandesSchema = z.object({
     )
     .optional()
 })
-  .strict({ message: 'Des paramètres de requête non autorisés ont été détectés' });
+  .strict();
 
 export type QueryDemandesInput = z.infer<typeof queryDemandesSchema>;
 
@@ -170,12 +172,12 @@ export const transitionDemandeSchema = z.object({
     )
     .optional(),
   traiteParId: z.string({
-    invalid_type_error: "L'identifiant du traitant doit être une chaîne de caractères"
+    error: "L'identifiant du traitant doit être une chaîne de caractères"
   })
     .regex(/^[a-f\d]{24}$/i, "L'identifiant du traitant n'est pas valide")
     .optional()
 })
-  .strict({ message: 'Des champs non autorisés ont été détectés' })
+  .strict()
   .refine(
     (data) => {
       // If status is REJETE, motifRefus is required
@@ -230,15 +232,14 @@ export const fileUploadSchema = z.object({
     )
     .optional()
 })
-  .strict({ message: 'Des champs non autorisés ont été détectés' });
+  .strict();
 
 export type FileUploadInput = z.infer<typeof fileUploadSchema>;
 
 // Commentaire Schema for adding comments to demandes
 export const commentaireSchema = z.object({
   contenu: z.string({
-    required_error: 'Le contenu du commentaire est requis',
-    invalid_type_error: 'Le contenu doit être une chaîne de caractères'
+    error: 'Le contenu du commentaire est requis',
   })
     .min(1, 'Le commentaire ne peut pas être vide')
     .transform(normalizeString)
@@ -248,9 +249,9 @@ export const commentaireSchema = z.object({
         .max(1000, 'Le commentaire ne peut pas dépasser 1000 caractères')
     ),
   isInternal: z.boolean({
-    invalid_type_error: 'isInternal doit être un booléen'
+    error: 'isInternal doit être un booléen'
   }).default(false)
 })
-  .strict({ message: 'Des champs non autorisés ont été détectés' });
+  .strict();
 
 export type CommentaireInput = z.infer<typeof commentaireSchema>;

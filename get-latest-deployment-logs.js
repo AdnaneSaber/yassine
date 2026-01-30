@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const https = require('https');
+import { get } from 'https';
 
 const TOKEN = "1em11PWm0IHIJraAxIpqUhpa";
 const PROJECT_ID = "prj_N7f3PwO83J1gruOj9L58IeM37j4G";
@@ -15,7 +15,7 @@ function httpsGet(url, headers) {
       }
     };
 
-    https.get(url, options, (res) => {
+    get(url, options, (res) => {
       let data = '';
 
       res.on('data', (chunk) => {
