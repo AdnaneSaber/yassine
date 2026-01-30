@@ -40,10 +40,9 @@ export interface FormErrorsProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function FormErrors({ errors, title = 'Erreur', className, ...props }: FormErrorsProps) {
-  if (!errors) return null;
-
   // Normalize errors to array format
   const errorList = React.useMemo(() => {
+    if (!errors) return [];
     if (typeof errors === 'string') {
       return [errors];
     }

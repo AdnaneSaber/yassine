@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import { z } from 'zod';
 import { authOptions } from '@/lib/auth/auth-options';
 import { createDemandeSchema, updateDemandeSchema, transitionDemandeSchema } from '@/lib/validators/demande';
-import { Demande, Etudiant, Utilisateur } from '@/lib/db/models';
+import { Demande, Etudiant } from '@/lib/db/models';
 import { DemandeWorkflow } from '@/lib/workflow/state-machine';
 import { STATUTS_META } from '@/lib/workflow/constants';
 import connectDB from '@/lib/db/mongodb';
