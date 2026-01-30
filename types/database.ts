@@ -92,6 +92,7 @@ export interface IDemande {
 }
 
 export interface IEtudiant {
+  _id?: Types.ObjectId | string;
   matricule: string;
   nom: string;
   prenom: string;
@@ -107,6 +108,7 @@ export interface IEtudiant {
 }
 
 export interface IHistorique {
+  _id?: Types.ObjectId | string;
   demandeId: Types.ObjectId;
   numeroDemandeRef: string;
   statutAncien?: StatutRef;
@@ -119,6 +121,7 @@ export interface IHistorique {
 }
 
 export interface IUtilisateur {
+  _id?: Types.ObjectId | string;
   email: string;
   hashPassword: string;
   nom: string;
@@ -131,6 +134,7 @@ export interface IUtilisateur {
 }
 
 export interface INotification {
+  _id?: Types.ObjectId | string;
   demandeId: Types.ObjectId;
   type: 'EMAIL' | 'SMS';
   destinataire: string;
