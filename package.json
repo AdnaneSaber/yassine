@@ -3,10 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "env": "node load-env.js",
+    "dev": "node load-env.js && next dev --turbopack",
+    "build": "node load-env.js && next build",
+    "start": "node load-env.js && next start",
+    "lint": "next lint",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:integration:watch": "vitest --config vitest.integration.config.ts",
+    "test:unit": "vitest run --exclude '__tests__/integration/**'",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:student": "playwright test __tests__/e2e/student",
+    "test:e2e:admin": "playwright test __tests__/e2e/admin"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -34,18 +47,27 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@tailwindcss/oxide-win32-x64-msvc": "^4.1.18",
     "@tailwindcss/postcss": "^4.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9",
     "eslint-config-next": "^15.1.6",
+    "jsdom": "^26.0.0",
+    "mongodb-memory-server": "^11.0.1",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.21.0",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.0.0"
   },
   "optionalDependencies": {
     "lightningcss-win32-x64-msvc": "^1.31.1"

@@ -1,8 +1,21 @@
 import dotenv from 'dotenv';
 import { resolve } from 'path';
+import { readFileSync } from 'fs';
 
 // Load environment variables from .env.local
-dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+const envPath = resolve(process.cwd(), '.env.local');
+try {
+  const envContent = readFileSync(envPath, 'utf-8');
+  const lines = envContent.split('\n');
+  for (const line of lines) {
+    const match = line.match(/^export\s+(\w+)="(.+)"\s*$/);
+    if (match && !process.env[match[1]]) {
+      process.env[match[1]] = match[2].replace(/^"|"$/g, '');
+    }
+  }
+} catch {
+  dotenv.config({ path: envPath });
+}
 
 import connectDB from '@/lib/db/mongodb';
 import { Etudiant, Demande, Utilisateur } from '@/lib/db/models';
@@ -33,6 +46,7 @@ async function seedDatabase() {
       nom: 'SABER',
       prenom: 'Adnane',
       email: 'adnane.saber@university.edu',
+      hashPassword: await bcrypt.hash('password123', 10),
       niveauEtude: 'M2',
       filiere: 'Business Intelligence & Digitalisation',
       actif: true
@@ -42,6 +56,7 @@ async function seedDatabase() {
       nom: 'ALAMI',
       prenom: 'Sara',
       email: 'sara.alami@university.edu',
+      hashPassword: await bcrypt.hash('password123', 10),
       niveauEtude: 'M1',
       filiere: 'Data Science',
       actif: true

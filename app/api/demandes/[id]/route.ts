@@ -3,6 +3,21 @@ import { updateDemandeSchema } from '@/lib/validators/demande';
 import { handleApiError } from '@/lib/api/error-handler';
 import { Demande } from '@/lib/db/models';
 import connectDB from '@/lib/db/mongodb';
+import { Types } from 'mongoose';
+
+// Helper to validate ObjectId
+function validateId(id: string): NextResponse | null {
+  if (!Types.ObjectId.isValid(id)) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: { code: 'VAL_001', message: 'ID de demande invalide' }
+      },
+      { status: 400 }
+    );
+  }
+  return null;
+}
 
 // GET /api/demandes/[id] - Get single demande
 export async function GET(
@@ -13,6 +28,11 @@ export async function GET(
     await connectDB();
 
     const { id } = await params;
+    
+    // Validate ID format
+    const idError = validateId(id);
+    if (idError) return idError;
+    
     const demande = await Demande.findById(id);
 
     if (!demande) {
@@ -44,12 +64,42 @@ export async function PATCH(
     await connectDB();
 
     const { id } = await params;
+    
+    // Validate ID format
+    const idError = validateId(id);
+    if (idError) return idError;
+    
     const body = await request.json();
     const validated = updateDemandeSchema.parse(body);
+    
+    // Transform typeDemande string to object if needed
+    const updateData: any = { ...validated };
+    if (validated.typeDemande && typeof validated.typeDemande === 'string') {
+      const typeCode = validated.typeDemande;
+      const typeNames: Record<string, string> = {
+        'ATTESTATION_SCOLARITE': 'Attestation de scolarité',
+        'RELEVE_NOTES': 'Relevé de notes',
+        'ATTESTATION_REUSSITE': 'Attestation de réussite',
+        'DUPLICATA_CARTE': 'Duplicata de carte étudiant',
+        'CONVENTION_STAGE': 'Convention de stage'
+      };
+      const typeDelais: Record<string, number> = {
+        'ATTESTATION_SCOLARITE': 3,
+        'RELEVE_NOTES': 5,
+        'ATTESTATION_REUSSITE': 3,
+        'DUPLICATA_CARTE': 7,
+        'CONVENTION_STAGE': 10
+      };
+      updateData.typeDemande = {
+        code: typeCode,
+        nom: typeNames[typeCode] || typeCode,
+        delaiTraitement: typeDelais[typeCode] || 5
+      };
+    }
 
     const demande = await Demande.findByIdAndUpdate(
       id,
-      { $set: validated },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
@@ -78,6 +128,11 @@ export async function DELETE(
     await connectDB();
 
     const { id } = await params;
+    
+    // Validate ID format
+    const idError = validateId(id);
+    if (idError) return idError;
+    
     // Soft delete by setting actif = false
     const demande = await Demande.findByIdAndUpdate(
       id,
