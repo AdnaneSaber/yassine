@@ -48,7 +48,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.50.0",
-    "@tailwindcss/oxide-win32-x64-msvc": "^4.1.18",
     "@tailwindcss/postcss": "^4.0.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -70,6 +69,7 @@
     "vitest": "^3.0.0"
   },
   "optionalDependencies": {
+    "@tailwindcss/oxide-win32-x64-msvc": "^4.1.18",
     "lightningcss-win32-x64-msvc": "^1.31.1"
   }
 }
