@@ -331,3 +331,93 @@ function getDelaiTraitement(code: string): number {
   };
   return delais[code] || 5;
 }
+
+/**
+ * Add student response when demande is in ATTENTE_INFO status
+ * This transitions the demande back to EN_COURS
+ */
+export async function addStudentResponseAction(
+  demandeId: string,
+  formData: FormData
+): Promise<ActionResponse<any>> {
+  try {
+    await connectDB();
+
+    // Get authenticated user session
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return {
+        success: false,
+        error: { code: 'AUTH_001', message: 'Non authentifié. Veuillez vous connecter.' }
+      };
+    }
+
+    const userId = (session.user as any).id;
+    const userType = (session.user as any).type;
+
+    // Only students can respond to action required
+    if (userType !== 'student') {
+      return {
+        success: false,
+        error: { code: 'AUTH_002', message: 'Seuls les étudiants peuvent répondre.' }
+      };
+    }
+
+    // Get the response comment
+    const commentaire = formData.get('commentaire') as string;
+    if (!commentaire || commentaire.trim().length < 5) {
+      return {
+        success: false,
+        error: { code: 'VAL_001', message: 'Le commentaire doit contenir au moins 5 caractères.' }
+      };
+    }
+
+    // Fetch demande
+    const demande = await Demande.findById(demandeId);
+    if (!demande) {
+      return {
+        success: false,
+        error: { code: 'RES_001', message: 'Demande non trouvée' }
+      };
+    }
+
+    // Verify the student owns this demande
+    if (demande.etudiant.id.toString() !== userId) {
+      return {
+        success: false,
+        error: { code: 'AUTH_003', message: 'Vous n\'êtes pas autorisé à répondre à cette demande.' }
+      };
+    }
+
+    // Verify status is ATTENTE_INFO
+    if (demande.statut.code !== 'ATTENTE_INFO') {
+      return {
+        success: false,
+        error: { code: 'WF_001', message: 'Cette demande n\'est pas en attente d\'information.' }
+      };
+    }
+
+    // Execute transition from ATTENTE_INFO to EN_COURS
+    const workflow = new DemandeWorkflow(demande, {
+      userId: userId,
+      userRole: 'STUDENT',
+      commentaire: commentaire
+    });
+
+    await workflow.transition('EN_COURS');
+
+    // Revalidate cache
+    revalidatePath('/demandes');
+    revalidatePath(`/demandes/${demandeId}`);
+    revalidatePath('/admin/demandes');
+    revalidatePath(`/admin/demandes/${demandeId}`);
+
+    return { success: true, data: demande.toObject() };
+  } catch (error) {
+    console.error('Add student response error:', error);
+    return {
+      success: false,
+      error: { code: 'SRV_001', message: 'Erreur serveur' }
+    };
+  }
+}

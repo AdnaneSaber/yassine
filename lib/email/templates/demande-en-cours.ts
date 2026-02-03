@@ -5,7 +5,7 @@ import type { EmailTemplate, EmailTemplateResult } from '@/types/email';
  * Sent when a request is being processed by the administration
  */
 export const demandeEnCoursTemplate: EmailTemplate = (data): EmailTemplateResult => {
-  const { prenom, nom, numeroDemande, typeDemande, delaiEstime, commentaireAdmin } = data;
+  const { prenom, nom, demandeId, numeroDemande, typeDemande, delaiEstime, commentaireAdmin } = data;
 
   const subject = `Votre demande ${numeroDemande} est en cours de traitement`;
 
@@ -137,7 +137,7 @@ export const demandeEnCoursTemplate: EmailTemplate = (data): EmailTemplateResult
           <!-- CTA Button -->
           <tr>
             <td style="padding: 0 30px 40px 30px; text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/etudiant/demandes/${numeroDemande}"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/demandes/${demandeId}"
                  style="display: inline-block; padding: 14px 32px; background-color: #f59e0b; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600;">
                 Voir le détail
               </a>

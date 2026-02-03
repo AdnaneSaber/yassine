@@ -5,7 +5,7 @@ import type { EmailTemplate, EmailTemplateResult } from '@/types/email';
  * Sent when a request has been rejected by the administration
  */
 export const demandeRejeteeTemplate: EmailTemplate = (data): EmailTemplateResult => {
-  const { prenom, nom, numeroDemande, typeDemande, motifRefus, commentaireAdmin } = data;
+  const { prenom, nom, demandeId, numeroDemande, typeDemande, motifRefus, commentaireAdmin } = data;
 
   const subject = `Votre demande ${numeroDemande} a été rejetée`;
 
@@ -146,11 +146,11 @@ export const demandeRejeteeTemplate: EmailTemplate = (data): EmailTemplateResult
           <!-- CTA Button -->
           <tr>
             <td style="padding: 0 30px 30px 30px; text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/etudiant/demandes/nouvelle"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/demandes/nouvelle"
                  style="display: inline-block; padding: 14px 32px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600; margin-right: 10px;">
                 Soumettre une nouvelle demande
               </a>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/etudiant/demandes/${numeroDemande}"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/demandes/${demandeId}"
                  style="display: inline-block; padding: 14px 32px; background-color: #6b7280; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600;">
                 Voir les détails
               </a>

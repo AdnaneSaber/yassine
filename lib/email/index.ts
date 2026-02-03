@@ -43,6 +43,7 @@ export async function sendDemandeStatusEmail(
       prenom: demande.etudiant.prenom,
       nom: demande.etudiant.nom,
       email: demande.etudiant.email,
+      demandeId: demande._id?.toString() || '',
       numeroDemande: demande.numeroDemande,
       typeDemande: demande.typeDemande.nom,
       typeDemandeCode: demande.typeDemande.code,

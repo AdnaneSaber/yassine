@@ -5,7 +5,7 @@ import type { EmailTemplate, EmailTemplateResult } from '@/types/email';
  * Sent when a request has been fully processed and documents are ready
  */
 export const demandeTraiteeTemplate: EmailTemplate = (data): EmailTemplateResult => {
-  const { prenom, nom, numeroDemande, typeDemande, dateTraitement } = data;
+  const { prenom, nom, demandeId, numeroDemande, typeDemande, dateTraitement } = data;
 
   const formattedDate = dateTraitement
     ? new Date(dateTraitement).toLocaleDateString('fr-FR', {
@@ -140,7 +140,7 @@ export const demandeTraiteeTemplate: EmailTemplate = (data): EmailTemplateResult
           <!-- CTA Buttons -->
           <tr>
             <td style="padding: 0 30px 30px 30px; text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/etudiant/demandes/${numeroDemande}"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/demandes/${demandeId}"
                  style="display: inline-block; padding: 14px 32px; background-color: #059669; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600; margin: 0 5px 10px 5px;">
                 Télécharger le document
               </a>

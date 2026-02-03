@@ -17,6 +17,7 @@ export interface EmailData {
   email: string;
 
   // Request information
+  demandeId: string; // MongoDB ObjectId for URL links
   numeroDemande: string;
   typeDemande: string;
   typeDemandeCode: TypeDemandeCode;
