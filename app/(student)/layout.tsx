@@ -23,7 +23,15 @@ async function getStudentInfo() {
     .select('niveauEtude filiere nom prenom')
     .lean();
 
-  return student;
+  if (!student) return null;
+
+  // Serialize to plain object (convert _id to string and remove it since we don't need it)
+  return {
+    nom: student.nom,
+    prenom: student.prenom,
+    niveauEtude: student.niveauEtude,
+    filiere: student.filiere
+  };
 }
 
 export default async function StudentLayout({ children }: StudentLayoutProps) {
@@ -48,7 +56,7 @@ export default async function StudentLayout({ children }: StudentLayoutProps) {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {student && <StudentProfileBadge student={student as any} />}
+              {student && <StudentProfileBadge student={student} />}
               <Link href="/demandes/new">
                 <Button>Nouvelle demande</Button>
               </Link>
