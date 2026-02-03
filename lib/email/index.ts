@@ -69,13 +69,14 @@ export async function sendDemandeStatusEmail(
       };
     }
 
-    // Send email
+    // Send email to student with superadmin in CC
     const result = await sendEmail({
-      to: "adnanesaber15@gmail.com",
+      to: demande.etudiant.email,
       subject,
       html,
       templateType,
-      demandeId: demande._id?.toString() || ''
+      demandeId: demande._id?.toString() || '',
+      cc: ['yassine.jadir01@gmail.com']
     });
 
     return result;
