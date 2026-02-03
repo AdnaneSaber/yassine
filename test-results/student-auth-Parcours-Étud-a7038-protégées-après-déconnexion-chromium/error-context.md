@@ -1,0 +1,8 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - heading "Signout" [level=1] [ref=e4]
+  - paragraph [ref=e5]: Are you sure you want to sign out?
+  - button "Sign out" [ref=e7]
+```

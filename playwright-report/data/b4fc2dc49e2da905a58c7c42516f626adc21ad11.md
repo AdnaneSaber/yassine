@@ -1,0 +1,90 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Espace Étudiant" [ref=e7] [cursor=pointer]:
+            - /url: /demandes
+          - link "Mes demandes" [ref=e9] [cursor=pointer]:
+            - /url: /demandes
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - img [ref=e12]
+            - generic [ref=e15]:
+              - generic [ref=e16]: Adnane SABER
+              - generic [ref=e17]:
+                - generic [ref=e18]: M2
+                - generic [ref=e19]: Business Intelligence & Digitalisation
+          - link "Nouvelle demande" [ref=e20] [cursor=pointer]:
+            - /url: /demandes/new
+            - button "Nouvelle demande" [ref=e21]
+          - button "Déconnexion" [ref=e22]:
+            - img
+            - text: Déconnexion
+    - main [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - link "Retour" [ref=e26] [cursor=pointer]:
+            - /url: /demandes
+            - button "Retour" [ref=e27]:
+              - img
+              - text: Retour
+          - generic [ref=e28]:
+            - heading "Nouvelle demande" [level=1] [ref=e29]
+            - paragraph [ref=e30]: Remplissez le formulaire ci-dessous pour soumettre une nouvelle demande
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]: Information importante
+            - generic [ref=e34]: Veuillez remplir tous les champs obligatoires (marqués par *)
+          - list [ref=e36]:
+            - listitem [ref=e37]: Votre demande sera traitée dans les délais indiqués selon le type de document
+            - listitem [ref=e38]: Vous recevrez une notification par email à chaque changement de statut
+            - listitem [ref=e39]: Assurez-vous que les informations fournies sont exactes et complètes
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]: Détails de la demande
+            - generic [ref=e43]: Fournissez les informations nécessaires pour traiter votre demande
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - generic [ref=e47]: Type de demande *
+              - combobox "Type de demande *" [ref=e48]:
+                - generic: Attestation de scolarité
+                - img
+              - combobox [ref=e49]
+              - paragraph [ref=e50]: Choisissez le type de document que vous souhaitez obtenir
+            - generic [ref=e51]:
+              - generic [ref=e52]: Objet *
+              - textbox "Objet *" [ref=e53]:
+                - /placeholder: Objet de la demande
+                - text: Demande Finalisée Test - Demande E2E 1770081988473
+              - paragraph [ref=e54]: Résumez votre demande en quelques mots (5-255 caractères)
+            - generic [ref=e55]:
+              - generic [ref=e56]: Description *
+              - textbox "Description *" [active] [ref=e57]:
+                - /placeholder: Décrivez votre demande en détail...
+                - text: Description de test pour la demande E2E créée le 03/02/2026 02:26:28. Cette demande est utilisée pour les tests automatisés.
+              - paragraph [ref=e58]: Fournissez tous les détails nécessaires pour traiter votre demande (minimum 10 caractères)
+            - generic [ref=e59]:
+              - generic [ref=e60]: Priorité
+              - combobox "Priorité" [ref=e61]:
+                - generic: Normale
+                - img
+              - combobox [ref=e62]
+              - paragraph [ref=e63]: Indiquez le niveau d'urgence de votre demande
+            - generic [ref=e64]:
+              - button "Soumettre la demande" [disabled]
+              - button "Annuler" [ref=e65]
+            - status [ref=e66]
+    - contentinfo [ref=e67]:
+      - paragraph [ref=e69]: Système de Gestion des Demandes Étudiantes
+  - region "Notifications alt+T"
+  - generic [ref=e72] [cursor=pointer]:
+    - img [ref=e73]
+    - generic [ref=e75]: 1 error
+    - button "Hide Errors" [ref=e76]:
+      - img [ref=e77]
+  - alert [ref=e80]
+```

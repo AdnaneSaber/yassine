@@ -1,0 +1,87 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - link "Espace Étudiant" [ref=e7] [cursor=pointer]:
+          - /url: /demandes
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - generic [ref=e13]:
+              - generic [ref=e14]: Adnane SABER
+              - generic [ref=e15]:
+                - generic [ref=e16]: M2
+                - generic [ref=e17]: Business Intelligence & Digitalisation
+          - link "Nouvelle demande" [ref=e18] [cursor=pointer]:
+            - /url: /demandes/new
+            - button "Nouvelle demande" [ref=e19]
+          - button "Déconnexion" [ref=e20]:
+            - img
+            - text: Déconnexion
+    - main [ref=e21]:
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - link "Retour" [ref=e24] [cursor=pointer]:
+            - /url: /demandes
+            - button "Retour" [ref=e25]:
+              - img
+              - text: Retour
+          - generic [ref=e26]:
+            - heading "Nouvelle demande" [level=1] [ref=e27]
+            - paragraph [ref=e28]: Remplissez le formulaire ci-dessous pour soumettre une nouvelle demande
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]: Information importante
+            - generic [ref=e32]: Veuillez remplir tous les champs obligatoires (marqués par *)
+          - list [ref=e34]:
+            - listitem [ref=e35]: Votre demande sera traitée dans les délais indiqués selon le type de document
+            - listitem [ref=e36]: Vous recevrez une notification par email à chaque changement de statut
+            - listitem [ref=e37]: Assurez-vous que les informations fournies sont exactes et complètes
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]: Détails de la demande
+            - generic [ref=e41]: Fournissez les informations nécessaires pour traiter votre demande
+          - generic [ref=e43]:
+            - generic [ref=e44]:
+              - generic [ref=e45]: Type de demande *
+              - combobox "Type de demande *" [ref=e46]:
+                - generic: Attestation de scolarité
+                - img
+              - combobox [ref=e47]
+              - paragraph [ref=e48]: Choisissez le type de document que vous souhaitez obtenir
+            - generic [ref=e49]:
+              - generic [ref=e50]: Objet *
+              - textbox "Objet *" [ref=e51]:
+                - /placeholder: Objet de la demande
+                - text: Mobile - Demande E2E 1770082926342
+              - paragraph [ref=e52]: Résumez votre demande en quelques mots (5-255 caractères)
+            - generic [ref=e53]:
+              - generic [ref=e54]: Description *
+              - textbox "Description *" [active] [ref=e55]:
+                - /placeholder: Décrivez votre demande en détail...
+                - text: Description de test pour la demande E2E créée le 03/02/2026 02:42:06. Cette demande est utilisée pour les tests automatisés.
+              - paragraph [ref=e56]: Fournissez tous les détails nécessaires pour traiter votre demande (minimum 10 caractères)
+            - generic [ref=e57]:
+              - generic [ref=e58]: Priorité
+              - combobox "Priorité" [ref=e59]:
+                - generic: Normale
+                - img
+              - combobox [ref=e60]
+              - paragraph [ref=e61]: Indiquez le niveau d'urgence de votre demande
+            - generic [ref=e62]:
+              - button "Soumettre la demande" [disabled]
+              - button "Annuler" [ref=e63]
+            - status [ref=e64]
+    - contentinfo [ref=e65]:
+      - paragraph [ref=e67]: Système de Gestion des Demandes Étudiantes
+  - region "Notifications alt+T"
+  - generic [ref=e70] [cursor=pointer]:
+    - img [ref=e71]
+    - generic [ref=e73]: 1 error
+    - button "Hide Errors" [ref=e74]:
+      - img [ref=e75]
+  - alert [ref=e78]
+```

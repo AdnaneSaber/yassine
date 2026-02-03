@@ -1,0 +1,161 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Administration" [ref=e7] [cursor=pointer]:
+            - /url: /admin/dashboard
+          - generic [ref=e8]:
+            - link "Tableau de bord" [ref=e9] [cursor=pointer]:
+              - /url: /admin/dashboard
+              - button "Tableau de bord" [ref=e10]
+            - link "Toutes les demandes" [ref=e11] [cursor=pointer]:
+              - /url: /admin/demandes
+              - button "Toutes les demandes" [ref=e12]
+            - link "Étudiants" [ref=e13] [cursor=pointer]:
+              - /url: /admin/students
+              - button "Étudiants" [ref=e14]
+        - generic [ref=e15]:
+          - generic [ref=e16]: Administrateur
+          - button "Déconnexion" [ref=e17]:
+            - img
+            - text: Déconnexion
+    - main [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - heading "Tableau de bord" [level=1] [ref=e21]
+          - paragraph [ref=e22]: Vue d'ensemble de l'activité des demandes étudiantes
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e25]: Total des demandes
+            - generic [ref=e26]: "6"
+            - paragraph [ref=e27]: Toutes les demandes actives
+          - generic [ref=e28]:
+            - generic [ref=e29]: En cours
+            - generic [ref=e30]: "5"
+            - paragraph [ref=e31]: En attente de traitement
+          - generic [ref=e32]:
+            - generic [ref=e33]: Traitées
+            - generic [ref=e34]: "0"
+            - paragraph [ref=e35]: Traitées avec succès
+          - generic [ref=e36]:
+            - generic [ref=e37]: Rejetées
+            - generic [ref=e38]: "0"
+            - paragraph [ref=e39]: Demandes rejetées
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - heading "Demandes récentes" [level=2] [ref=e43]
+              - paragraph [ref=e44]: Les 10 dernières demandes soumises
+            - link "Voir toutes les demandes" [ref=e45] [cursor=pointer]:
+              - /url: /admin/demandes
+              - button "Voir toutes les demandes" [ref=e46]
+          - table [ref=e49]:
+            - rowgroup [ref=e50]:
+              - row "Numéro Étudiant Type Statut Date Actions" [ref=e51]:
+                - columnheader "Numéro" [ref=e52]
+                - columnheader "Étudiant" [ref=e53]
+                - columnheader "Type" [ref=e54]
+                - columnheader "Statut" [ref=e55]
+                - columnheader "Date" [ref=e56]
+                - columnheader "Actions" [ref=e57]
+            - rowgroup [ref=e58]:
+              - row "DEM-2026-000006 Adnane SABER 2024001 Convention de stage Reçu 02/02/2026 Voir" [ref=e59]:
+                - cell "DEM-2026-000006" [ref=e60]
+                - cell "Adnane SABER 2024001" [ref=e61]:
+                  - generic [ref=e62]:
+                    - generic [ref=e63]: Adnane SABER
+                    - generic [ref=e64]: "2024001"
+                - cell "Convention de stage" [ref=e65]
+                - cell "Reçu" [ref=e66]:
+                  - generic [ref=e67]: Reçu
+                - cell "02/02/2026" [ref=e68]
+                - cell "Voir" [ref=e69]:
+                  - link "Voir" [ref=e70] [cursor=pointer]:
+                    - /url: /admin/demandes/6980c65043b1271ffcfec98b
+                    - button "Voir" [ref=e71]
+              - row "DEM-2026-000004 Adnane SABER 2024001 Convention de stage Reçu 02/02/2026 Voir" [ref=e72]:
+                - cell "DEM-2026-000004" [ref=e73]
+                - cell "Adnane SABER 2024001" [ref=e74]:
+                  - generic [ref=e75]:
+                    - generic [ref=e76]: Adnane SABER
+                    - generic [ref=e77]: "2024001"
+                - cell "Convention de stage" [ref=e78]
+                - cell "Reçu" [ref=e79]:
+                  - generic [ref=e80]: Reçu
+                - cell "02/02/2026" [ref=e81]
+                - cell "Voir" [ref=e82]:
+                  - link "Voir" [ref=e83] [cursor=pointer]:
+                    - /url: /admin/demandes/6980c04143b1271ffcfec2b5
+                    - button "Voir" [ref=e84]
+              - row "DEM-2026-000005 Adnane SABER 2024001 Attestation de scolarité Reçu 02/02/2026 Voir" [ref=e85]:
+                - cell "DEM-2026-000005" [ref=e86]
+                - cell "Adnane SABER 2024001" [ref=e87]:
+                  - generic [ref=e88]:
+                    - generic [ref=e89]: Adnane SABER
+                    - generic [ref=e90]: "2024001"
+                - cell "Attestation de scolarité" [ref=e91]
+                - cell "Reçu" [ref=e92]:
+                  - generic [ref=e93]: Reçu
+                - cell "02/02/2026" [ref=e94]
+                - cell "Voir" [ref=e95]:
+                  - link "Voir" [ref=e96] [cursor=pointer]:
+                    - /url: /admin/demandes/6980c64843b1271ffcfec974
+                    - button "Voir" [ref=e97]
+              - row "DEM-2026-000003 Adnane SABER 2024001 Attestation de scolarité Reçu 02/02/2026 Voir" [ref=e98]:
+                - cell "DEM-2026-000003" [ref=e99]
+                - cell "Adnane SABER 2024001" [ref=e100]:
+                  - generic [ref=e101]:
+                    - generic [ref=e102]: Adnane SABER
+                    - generic [ref=e103]: "2024001"
+                - cell "Attestation de scolarité" [ref=e104]
+                - cell "Reçu" [ref=e105]:
+                  - generic [ref=e106]: Reçu
+                - cell "02/02/2026" [ref=e107]
+                - cell "Voir" [ref=e108]:
+                  - link "Voir" [ref=e109] [cursor=pointer]:
+                    - /url: /admin/demandes/6980c03a43b1271ffcfec29e
+                    - button "Voir" [ref=e110]
+              - row "DEM-2026-000002 Sara ALAMI 2024002 Relevé de notes Soumis 02/02/2026 Voir" [ref=e111]:
+                - cell "DEM-2026-000002" [ref=e112]
+                - cell "Sara ALAMI 2024002" [ref=e113]:
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Sara ALAMI
+                    - generic [ref=e116]: "2024002"
+                - cell "Relevé de notes" [ref=e117]
+                - cell "Soumis" [ref=e118]:
+                  - generic [ref=e119]: Soumis
+                - cell "02/02/2026" [ref=e120]
+                - cell "Voir" [ref=e121]:
+                  - link "Voir" [ref=e122] [cursor=pointer]:
+                    - /url: /admin/demandes/6980b6a3458a86672007bf6b
+                    - button "Voir" [ref=e123]
+              - row "DEM-2026-000001 Adnane SABER 2024001 Attestation de scolarité En cours 02/02/2026 Voir" [ref=e124]:
+                - cell "DEM-2026-000001" [ref=e125]
+                - cell "Adnane SABER 2024001" [ref=e126]:
+                  - generic [ref=e127]:
+                    - generic [ref=e128]: Adnane SABER
+                    - generic [ref=e129]: "2024001"
+                - cell "Attestation de scolarité" [ref=e130]
+                - cell "En cours" [ref=e131]:
+                  - generic [ref=e132]: En cours
+                - cell "02/02/2026" [ref=e133]
+                - cell "Voir" [ref=e134]:
+                  - link "Voir" [ref=e135] [cursor=pointer]:
+                    - /url: /admin/demandes/6980b6a3458a86672007bf68
+                    - button "Voir" [ref=e136]
+    - contentinfo [ref=e137]:
+      - paragraph [ref=e139]: Système de Gestion des Demandes Étudiantes - Administration
+  - region "Notifications alt+T"
+  - status [ref=e140]:
+    - generic [ref=e141]:
+      - img [ref=e143]
+      - generic [ref=e145]:
+        - text: Static route
+        - button "Hide static indicator" [ref=e146] [cursor=pointer]:
+          - img [ref=e147]
+  - alert [ref=e150]
+```

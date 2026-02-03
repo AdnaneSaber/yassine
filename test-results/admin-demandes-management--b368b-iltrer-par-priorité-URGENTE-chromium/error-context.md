@@ -1,0 +1,192 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Administration" [ref=e7] [cursor=pointer]:
+            - /url: /admin/dashboard
+          - generic [ref=e8]:
+            - link "Tableau de bord" [ref=e9] [cursor=pointer]:
+              - /url: /admin/dashboard
+              - button "Tableau de bord" [ref=e10]
+            - link "Toutes les demandes" [ref=e11] [cursor=pointer]:
+              - /url: /admin/demandes
+              - button "Toutes les demandes" [ref=e12]
+            - link "Étudiants" [ref=e13] [cursor=pointer]:
+              - /url: /admin/students
+              - button "Étudiants" [ref=e14]
+        - generic [ref=e15]:
+          - generic [ref=e16]: Administrateur
+          - button "Déconnexion" [ref=e17]:
+            - img
+            - text: Déconnexion
+    - main [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - heading "Toutes les demandes" [level=1] [ref=e21]
+          - paragraph [ref=e22]: Gérer et traiter toutes les demandes étudiantes
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: Statut
+            - combobox "Statut" [ref=e27]:
+              - option "Tous les statuts" [selected]
+              - option "Reçu"
+              - option "En cours"
+              - option "En attente d'information"
+              - option "Validé"
+              - option "Rejeté"
+              - option "Traité"
+              - option "Archivé"
+          - generic [ref=e28]:
+            - generic [ref=e29]: Priorité
+            - combobox "Priorité" [ref=e30]:
+              - option "Toutes les priorités" [selected]
+              - option "Basse"
+              - option "Normale"
+              - option "Haute"
+              - option "Urgente"
+          - generic [ref=e31]:
+            - generic [ref=e32]: Type de demande
+            - combobox "Type de demande" [ref=e33]:
+              - option "Tous les types" [selected]
+              - option "Attestation de scolarité"
+              - option "Relevé de notes"
+              - option "Attestation de réussite"
+              - option "Duplicata de carte étudiant"
+              - option "Convention de stage"
+        - generic [ref=e34]:
+          - paragraph [ref=e35]: 6 demandes trouvées
+          - generic [ref=e37]:
+            - generic [ref=e38]: "Afficher:"
+            - combobox [ref=e39]:
+              - option "5"
+              - option "10"
+              - option "20" [selected]
+              - option "50"
+        - table [ref=e42]:
+          - rowgroup [ref=e43]:
+            - row "Numéro Étudiant Type Objet Statut Priorité Date Actions" [ref=e44]:
+              - columnheader "Numéro" [ref=e45]
+              - columnheader "Étudiant" [ref=e46]
+              - columnheader "Type" [ref=e47]
+              - columnheader "Objet" [ref=e48]
+              - columnheader "Statut" [ref=e49]
+              - columnheader "Priorité" [ref=e50]
+              - columnheader "Date" [ref=e51]
+              - columnheader "Actions" [ref=e52]
+          - rowgroup [ref=e53]:
+            - row "DEM-2026-000006 Adnane SABER 2024001 Convention de stage Test E2E - Priorité Urgente 1770047055128 Reçu URGENTE 02/02/2026 Voir Modifier" [ref=e54]:
+              - cell "DEM-2026-000006" [ref=e55]
+              - cell "Adnane SABER 2024001" [ref=e56]:
+                - generic [ref=e57]:
+                  - generic [ref=e58]: Adnane SABER
+                  - generic [ref=e59]: "2024001"
+              - cell "Convention de stage" [ref=e60]
+              - cell "Test E2E - Priorité Urgente 1770047055128" [ref=e61]:
+                - generic "Test E2E - Priorité Urgente 1770047055128" [ref=e62]
+              - cell "Reçu" [ref=e63]:
+                - generic [ref=e64]: Reçu
+              - cell "URGENTE" [ref=e65]
+              - cell "02/02/2026" [ref=e66]
+              - cell "Voir Modifier" [ref=e67]:
+                - generic [ref=e68]:
+                  - button "Voir" [ref=e69]
+                  - button "Modifier" [ref=e70]
+            - row "DEM-2026-000005 Adnane SABER 2024001 Attestation de scolarité Test E2E - Priorité Haute 1770047046523 Reçu HAUTE 02/02/2026 Voir Modifier" [ref=e71]:
+              - cell "DEM-2026-000005" [ref=e72]
+              - cell "Adnane SABER 2024001" [ref=e73]:
+                - generic [ref=e74]:
+                  - generic [ref=e75]: Adnane SABER
+                  - generic [ref=e76]: "2024001"
+              - cell "Attestation de scolarité" [ref=e77]
+              - cell "Test E2E - Priorité Haute 1770047046523" [ref=e78]:
+                - generic "Test E2E - Priorité Haute 1770047046523" [ref=e79]
+              - cell "Reçu" [ref=e80]:
+                - generic [ref=e81]: Reçu
+              - cell "HAUTE" [ref=e82]
+              - cell "02/02/2026" [ref=e83]
+              - cell "Voir Modifier" [ref=e84]:
+                - generic [ref=e85]:
+                  - button "Voir" [ref=e86]
+                  - button "Modifier" [ref=e87]
+            - row "DEM-2026-000004 Adnane SABER 2024001 Convention de stage Test E2E - Priorité Urgente 1770045503789 Reçu URGENTE 02/02/2026 Voir Modifier" [ref=e88]:
+              - cell "DEM-2026-000004" [ref=e89]
+              - cell "Adnane SABER 2024001" [ref=e90]:
+                - generic [ref=e91]:
+                  - generic [ref=e92]: Adnane SABER
+                  - generic [ref=e93]: "2024001"
+              - cell "Convention de stage" [ref=e94]
+              - cell "Test E2E - Priorité Urgente 1770045503789" [ref=e95]:
+                - generic "Test E2E - Priorité Urgente 1770045503789" [ref=e96]
+              - cell "Reçu" [ref=e97]:
+                - generic [ref=e98]: Reçu
+              - cell "URGENTE" [ref=e99]
+              - cell "02/02/2026" [ref=e100]
+              - cell "Voir Modifier" [ref=e101]:
+                - generic [ref=e102]:
+                  - button "Voir" [ref=e103]
+                  - button "Modifier" [ref=e104]
+            - row "DEM-2026-000003 Adnane SABER 2024001 Attestation de scolarité Test E2E - Priorité Haute 1770045496592 Reçu HAUTE 02/02/2026 Voir Modifier" [ref=e105]:
+              - cell "DEM-2026-000003" [ref=e106]
+              - cell "Adnane SABER 2024001" [ref=e107]:
+                - generic [ref=e108]:
+                  - generic [ref=e109]: Adnane SABER
+                  - generic [ref=e110]: "2024001"
+              - cell "Attestation de scolarité" [ref=e111]
+              - cell "Test E2E - Priorité Haute 1770045496592" [ref=e112]:
+                - generic "Test E2E - Priorité Haute 1770045496592" [ref=e113]
+              - cell "Reçu" [ref=e114]:
+                - generic [ref=e115]: Reçu
+              - cell "HAUTE" [ref=e116]
+              - cell "02/02/2026" [ref=e117]
+              - cell "Voir Modifier" [ref=e118]:
+                - generic [ref=e119]:
+                  - button "Voir" [ref=e120]
+                  - button "Modifier" [ref=e121]
+            - row "DEM-2026-000002 Sara ALAMI 2024002 Relevé de notes Relevé de notes S1 2024 Soumis HAUTE 02/02/2026 Voir Modifier" [ref=e122]:
+              - cell "DEM-2026-000002" [ref=e123]
+              - cell "Sara ALAMI 2024002" [ref=e124]:
+                - generic [ref=e125]:
+                  - generic [ref=e126]: Sara ALAMI
+                  - generic [ref=e127]: "2024002"
+              - cell "Relevé de notes" [ref=e128]
+              - cell "Relevé de notes S1 2024" [ref=e129]:
+                - generic "Relevé de notes S1 2024" [ref=e130]
+              - cell "Soumis" [ref=e131]:
+                - generic [ref=e132]: Soumis
+              - cell "HAUTE" [ref=e133]
+              - cell "02/02/2026" [ref=e134]
+              - cell "Voir Modifier" [ref=e135]:
+                - generic [ref=e136]:
+                  - button "Voir" [ref=e137]
+                  - button "Modifier" [ref=e138]
+            - row "DEM-2026-000001 Adnane SABER 2024001 Attestation de scolarité Attestation pour dossier CAF En cours NORMALE 02/02/2026 Voir Modifier" [ref=e139]:
+              - cell "DEM-2026-000001" [ref=e140]
+              - cell "Adnane SABER 2024001" [ref=e141]:
+                - generic [ref=e142]:
+                  - generic [ref=e143]: Adnane SABER
+                  - generic [ref=e144]: "2024001"
+              - cell "Attestation de scolarité" [ref=e145]
+              - cell "Attestation pour dossier CAF" [ref=e146]:
+                - generic "Attestation pour dossier CAF" [ref=e147]
+              - cell "En cours" [ref=e148]:
+                - generic [ref=e149]: En cours
+              - cell "NORMALE" [ref=e150]
+              - cell "02/02/2026" [ref=e151]
+              - cell "Voir Modifier" [ref=e152]:
+                - generic [ref=e153]:
+                  - button "Voir" [ref=e154]
+                  - button "Modifier" [ref=e155]
+    - contentinfo [ref=e156]:
+      - paragraph [ref=e158]: Système de Gestion des Demandes Étudiantes - Administration
+  - region "Notifications alt+T"
+  - generic [ref=e161] [cursor=pointer]:
+    - img [ref=e162]
+    - generic [ref=e164]: 7 errors
+    - button "Hide Errors" [ref=e165]:
+      - img [ref=e166]
+  - alert [ref=e169]
+```

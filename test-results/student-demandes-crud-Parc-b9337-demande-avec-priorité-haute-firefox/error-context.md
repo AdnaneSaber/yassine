@@ -1,0 +1,164 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "Espace Étudiant" [ref=e7] [cursor=pointer]:
+            - /url: /demandes
+          - link "Mes demandes" [ref=e9] [cursor=pointer]:
+            - /url: /demandes
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - img [ref=e12]
+            - generic [ref=e15]:
+              - generic [ref=e16]: Adnane SABER
+              - generic [ref=e17]:
+                - generic [ref=e18]: M2
+                - generic [ref=e19]: Business Intelligence & Digitalisation
+          - link "Nouvelle demande" [ref=e20] [cursor=pointer]:
+            - /url: /demandes/new
+            - button "Nouvelle demande" [ref=e21]
+          - button "Déconnexion" [ref=e22]:
+            - img
+            - text: Déconnexion
+    - main [ref=e23]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - heading "Mes demandes" [level=1] [ref=e27]
+            - paragraph [ref=e28]: Consultez et suivez l'état de vos demandes
+          - link "Nouvelle demande" [ref=e29] [cursor=pointer]:
+            - /url: /demandes/new
+            - button "Nouvelle demande" [ref=e30]:
+              - img
+              - text: Nouvelle demande
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]: Total
+            - generic [ref=e34]: "9"
+          - generic [ref=e35]:
+            - generic [ref=e36]: En cours
+            - generic [ref=e37]: "8"
+          - generic [ref=e38]:
+            - generic [ref=e39]: Traitées
+            - generic [ref=e40]: "0"
+          - generic [ref=e41]:
+            - generic [ref=e42]: Rejetées
+            - generic [ref=e43]: "0"
+        - generic [ref=e44]:
+          - generic [ref=e45]:
+            - textbox "Rechercher une demande..." [ref=e47]
+            - combobox [ref=e49]:
+              - generic: Toutes les demandes
+              - img
+          - generic [ref=e50]: 9 demandes trouvées
+          - generic [ref=e51]:
+            - generic [ref=e52] [cursor=pointer]:
+              - generic [ref=e53]:
+                - generic [ref=e54]:
+                  - heading "Test E2E - Priorité Haute 1770083815240" [level=3] [ref=e55]
+                  - paragraph [ref=e56]: DEM-2026-000009
+                - generic [ref=e57]: Reçu
+              - paragraph [ref=e58]: Demande de test avec priorité haute
+              - generic [ref=e59]:
+                - generic [ref=e60]: Attestation de scolarité
+                - generic [ref=e61]: 03/02/2026
+            - generic [ref=e62] [cursor=pointer]:
+              - generic [ref=e63]:
+                - generic [ref=e64]:
+                  - heading "Test E2E - Priorité Urgente 1770082194098" [level=3] [ref=e65]
+                  - paragraph [ref=e66]: DEM-2026-000008
+                - generic [ref=e67]: Reçu
+              - paragraph [ref=e68]: Demande urgente de test
+              - generic [ref=e69]:
+                - generic [ref=e70]: Convention de stage
+                - generic [ref=e71]: 03/02/2026
+            - generic [ref=e72] [cursor=pointer]:
+              - generic [ref=e73]:
+                - generic [ref=e74]:
+                  - heading "Test E2E - Priorité Haute 1770082187247" [level=3] [ref=e75]
+                  - paragraph [ref=e76]: DEM-2026-000007
+                - generic [ref=e77]: Reçu
+              - paragraph [ref=e78]: Demande de test avec priorité haute
+              - generic [ref=e79]:
+                - generic [ref=e80]: Attestation de scolarité
+                - generic [ref=e81]: 03/02/2026
+            - generic [ref=e82] [cursor=pointer]:
+              - generic [ref=e83]:
+                - generic [ref=e84]:
+                  - heading "Test E2E - Priorité Urgente 1770047055128" [level=3] [ref=e85]
+                  - paragraph [ref=e86]: DEM-2026-000006
+                - generic [ref=e87]: Reçu
+              - paragraph [ref=e88]: Demande urgente de test
+              - generic [ref=e89]:
+                - generic [ref=e90]: Convention de stage
+                - generic [ref=e91]: 02/02/2026
+            - generic [ref=e92] [cursor=pointer]:
+              - generic [ref=e93]:
+                - generic [ref=e94]:
+                  - heading "Test E2E - Priorité Haute 1770047046523" [level=3] [ref=e95]
+                  - paragraph [ref=e96]: DEM-2026-000005
+                - generic [ref=e97]: Reçu
+              - paragraph [ref=e98]: Demande de test avec priorité haute
+              - generic [ref=e99]:
+                - generic [ref=e100]: Attestation de scolarité
+                - generic [ref=e101]: 02/02/2026
+            - generic [ref=e102] [cursor=pointer]:
+              - generic [ref=e103]:
+                - generic [ref=e104]:
+                  - heading "Test E2E - Priorité Urgente 1770045503789" [level=3] [ref=e105]
+                  - paragraph [ref=e106]: DEM-2026-000004
+                - generic [ref=e107]: Reçu
+              - paragraph [ref=e108]: Demande urgente de test
+              - generic [ref=e109]:
+                - generic [ref=e110]: Convention de stage
+                - generic [ref=e111]: 02/02/2026
+            - generic [ref=e112] [cursor=pointer]:
+              - generic [ref=e113]:
+                - generic [ref=e114]:
+                  - heading "Test E2E - Priorité Haute 1770045496592" [level=3] [ref=e115]
+                  - paragraph [ref=e116]: DEM-2026-000003
+                - generic [ref=e117]: Reçu
+              - paragraph [ref=e118]: Demande de test avec priorité haute
+              - generic [ref=e119]:
+                - generic [ref=e120]: Attestation de scolarité
+                - generic [ref=e121]: 02/02/2026
+            - generic [ref=e122] [cursor=pointer]:
+              - generic [ref=e123]:
+                - generic [ref=e124]:
+                  - heading "Relevé de notes S1 2024" [level=3] [ref=e125]
+                  - paragraph [ref=e126]: DEM-2026-000002
+                - generic [ref=e127]: Soumis
+              - paragraph [ref=e128]: Demande de relevé de notes du premier semestre 2024 pour candidature master
+              - generic [ref=e129]:
+                - generic [ref=e130]: Relevé de notes
+                - generic [ref=e131]: 02/02/2026
+            - generic [ref=e132] [cursor=pointer]:
+              - generic [ref=e133]:
+                - generic [ref=e134]:
+                  - heading "Attestation pour dossier CAF" [level=3] [ref=e135]
+                  - paragraph [ref=e136]: DEM-2026-000001
+                - generic [ref=e137]: En cours
+              - paragraph [ref=e138]: J'ai besoin d'une attestation de scolarité pour mon dossier CAF avant le 30/01/2024
+              - generic [ref=e139]:
+                - generic [ref=e140]: Attestation de scolarité
+                - generic [ref=e141]: 02/02/2026
+    - contentinfo [ref=e142]:
+      - paragraph [ref=e144]: Système de Gestion des Demandes Étudiantes
+  - region "Notifications alt+T":
+    - list:
+      - listitem [ref=e145]:
+        - img [ref=e147]
+        - generic [ref=e150]:
+          - generic [ref=e151]: Demande créée avec succès
+          - generic [ref=e152]: Votre demande a été enregistrée et sera traitée dans les plus brefs délais.
+  - generic [ref=e155] [cursor=pointer]:
+    - img [ref=e156]
+    - generic [ref=e160]: 6 errors
+    - button "Hide Errors" [ref=e161]:
+      - img [ref=e162]
+  - alert [ref=e165]
+```
