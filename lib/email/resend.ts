@@ -18,7 +18,7 @@ const UNIVERSITY_NAME = 'Université de Tunis';
 export async function sendEmail(
   options: SendEmailOptions
 ): Promise<EmailServiceResponse> {
-  const { to, subject, html, templateType, demandeId } = options;
+  const { to, subject, html, templateType, demandeId, cc, bcc } = options;
 
   try {
     // Validate required environment variables
@@ -39,12 +39,29 @@ export async function sendEmail(
     });
 
     // Send email via Resend
-    const result = await resend.emails.send({
+    const emailPayload: {
+      from: string;
+      to: string[];
+      subject: string;
+      html: string;
+      cc?: string[];
+      bcc?: string[];
+    } = {
       from: FROM_EMAIL,
       to: [to],
       subject: subject,
       html: html
-    });
+    };
+
+    if (cc && cc.length > 0) {
+      emailPayload.cc = cc;
+    }
+
+    if (bcc && bcc.length > 0) {
+      emailPayload.bcc = bcc;
+    }
+
+    const result = await resend.emails.send(emailPayload);
 
     // Update notification with success status
     notification.statutEnvoi = 'ENVOYE';

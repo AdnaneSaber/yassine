@@ -52,6 +52,8 @@ export interface SendEmailOptions {
   html: string;
   templateType: EmailTemplateType;
   demandeId: string;
+  cc?: string[];
+  bcc?: string[];
 }
 
 // Email service response
