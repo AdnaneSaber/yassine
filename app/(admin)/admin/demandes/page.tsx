@@ -12,6 +12,9 @@ interface SearchParams {
   statut?: DemandeStatus;
   priorite?: string;
   typeDemande?: string;
+  search?: string;
+  filiere?: string;
+  niveauEtude?: string;
   page?: string;
   limit?: string;
 }
@@ -38,7 +41,30 @@ async function getDemandes(searchParams: SearchParams) {
     query['typeDemande.code'] = searchParams.typeDemande;
   }
 
-  // Get demandes
+  // Filter by filiere (student's field of study)
+  if (searchParams.filiere) {
+    query['etudiant.filiere'] = { $regex: searchParams.filiere, $options: 'i' };
+  }
+
+  // Filter by niveauEtude (student's level)
+  if (searchParams.niveauEtude) {
+    query['etudiant.niveauEtude'] = searchParams.niveauEtude;
+  }
+
+  // Search by student name, email, or matricule, or demande info
+  if (searchParams.search) {
+    const searchRegex = { $regex: searchParams.search, $options: 'i' };
+    query.$or = [
+      { 'etudiant.nom': searchRegex },
+      { 'etudiant.prenom': searchRegex },
+      { 'etudiant.email': searchRegex },
+      { 'etudiant.matricule': searchRegex },
+      { numeroDemande: searchRegex },
+      { objet: searchRegex },
+    ];
+  }
+
+  // Get demandes sorted by most recent first
   const demandes = await Demande.find(query)
     .sort({ createdAt: -1 })
     .skip(skip)
@@ -68,6 +94,19 @@ export default async function AdminDemandesPage({
   const params = await searchParams;
   const { demandes, total, page, totalPages } = await getDemandes(params);
   const currentLimit = parseInt(params.limit || '20');
+
+  // Build query string for pagination (preserving all filters)
+  const buildQueryString = (pageNum: number) => {
+    const queryParts: string[] = [`page=${pageNum}`];
+    if (params.statut) queryParts.push(`statut=${params.statut}`);
+    if (params.priorite) queryParts.push(`priorite=${params.priorite}`);
+    if (params.typeDemande) queryParts.push(`typeDemande=${params.typeDemande}`);
+    if (params.search) queryParts.push(`search=${encodeURIComponent(params.search)}`);
+    if (params.filiere) queryParts.push(`filiere=${encodeURIComponent(params.filiere)}`);
+    if (params.niveauEtude) queryParts.push(`niveauEtude=${params.niveauEtude}`);
+    if (params.limit) queryParts.push(`limit=${params.limit}`);
+    return queryParts.join('&');
+  };
 
   return (
     <div className="space-y-6">
@@ -109,7 +148,7 @@ export default async function AdminDemandesPage({
         <div className="flex justify-center gap-2">
           {page > 1 && (
             <a
-              href={`?page=${page - 1}${params.statut ? `&statut=${params.statut}` : ''}${params.priorite ? `&priorite=${params.priorite}` : ''}${params.typeDemande ? `&typeDemande=${params.typeDemande}` : ''}${params.limit ? `&limit=${params.limit}` : ''}`}
+              href={`?${buildQueryString(page - 1)}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               Précédent
@@ -117,7 +156,7 @@ export default async function AdminDemandesPage({
           )}
           {page < totalPages && (
             <a
-              href={`?page=${page + 1}${params.statut ? `&statut=${params.statut}` : ''}${params.priorite ? `&priorite=${params.priorite}` : ''}${params.typeDemande ? `&typeDemande=${params.typeDemande}` : ''}${params.limit ? `&limit=${params.limit}` : ''}`}
+              href={`?${buildQueryString(page + 1)}`}
               className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
             >
               Suivant
