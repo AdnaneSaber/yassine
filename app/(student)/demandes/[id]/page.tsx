@@ -51,7 +51,7 @@ export default async function DemandePage({
       </div>
 
       {/* Demande Detail */}
-      <DemandeDetail demande={demande} />
+      <DemandeDetail demande={demande} isStudent={true} />
     </div>
   );
 }

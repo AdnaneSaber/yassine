@@ -1,14 +1,56 @@
 'use client';
 
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import { addStudentResponseAction } from '@/app/actions/demandes';
 import type { IDemande } from '@/types/database';
 
 interface DemandeDetailProps {
   demande: IDemande;
+  isStudent?: boolean;
 }
 
-export function DemandeDetail({ demande }: DemandeDetailProps) {
+export function DemandeDetail({ demande, isStudent = false }: DemandeDetailProps) {
+  const [responseText, setResponseText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ success?: boolean; message?: string } | null>(null);
+
+  const isActionRequired = demande.statut.code === 'ATTENTE_INFO';
+
+  async function handleSubmitResponse(e: React.FormEvent) {
+    e.preventDefault();
+    if (!responseText.trim() || responseText.trim().length < 5) {
+      setSubmitStatus({ success: false, message: 'Le commentaire doit contenir au moins 5 caractères.' });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('commentaire', responseText);
+
+      const result = await addStudentResponseAction(demande._id?.toString() || '', formData);
+
+      if (result.success) {
+        setSubmitStatus({ success: true, message: 'Votre réponse a été envoyée avec succès.' });
+        setResponseText('');
+        // Refresh the page to show updated status
+        window.location.reload();
+      } else {
+        setSubmitStatus({ success: false, message: result.error.message || 'Une erreur est survenue.' });
+      }
+    } catch (error) {
+      setSubmitStatus({ success: false, message: 'Une erreur est survenue lors de l\'envoi.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -158,6 +200,71 @@ export function DemandeDetail({ demande }: DemandeDetailProps) {
             <p className="text-sm text-red-800">
               {demande.motifRefus}
             </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Student Response Form - Only show for ATTENTE_INFO status when student is viewing */}
+      {isActionRequired && isStudent && (
+        <Card className="border-amber-200 bg-amber-50">
+          <CardHeader>
+            <CardTitle className="text-amber-900 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              Action requise : Répondre à la demande d&apos;information
+            </CardTitle>
+            <CardDescription className="text-amber-700">
+              L&apos;administration demande des informations complémentaires. Veuillez fournir votre réponse ci-dessous.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmitResponse} className="space-y-4">
+              <div>
+                <label htmlFor="response" className="block text-sm font-medium text-amber-900 mb-2">
+                  Votre réponse / Informations complémentaires
+                </label>
+                <Textarea
+                  id="response"
+                  value={responseText}
+                  onChange={(e) => setResponseText(e.target.value)}
+                  placeholder="Décrivez les informations demandées..."
+                  className="min-h-[120px] bg-white border-amber-300 focus:border-amber-500"
+                  disabled={isSubmitting}
+                />
+              </div>
+
+              {submitStatus && (
+                <div className={`p-3 rounded-md text-sm ${submitStatus.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {submitStatus.message}
+                </div>
+              )}
+
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || responseText.trim().length < 5}
+                  className="bg-amber-600 hover:bg-amber-700 text-white"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                      </svg>
+                      Envoyer ma réponse
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
           </CardContent>
         </Card>
       )}

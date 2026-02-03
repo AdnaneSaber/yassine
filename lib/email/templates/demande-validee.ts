@@ -5,7 +5,7 @@ import type { EmailTemplate, EmailTemplateResult } from '@/types/email';
  * Sent when a request has been validated and approved by the administration
  */
 export const demandeValideeTemplate: EmailTemplate = (data): EmailTemplateResult => {
-  const { prenom, nom, numeroDemande, typeDemande, commentaireAdmin } = data;
+  const { prenom, nom, demandeId, numeroDemande, typeDemande, commentaireAdmin } = data;
 
   const subject = `✓ Votre demande ${numeroDemande} a été validée`;
 
@@ -136,7 +136,7 @@ export const demandeValideeTemplate: EmailTemplate = (data): EmailTemplateResult
           <!-- CTA Button -->
           <tr>
             <td style="padding: 0 30px 40px 30px; text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/etudiant/demandes/${numeroDemande}"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/demandes/${demandeId}"
                  style="display: inline-block; padding: 14px 32px; background-color: #10b981; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600;">
                 Voir ma demande
               </a>

@@ -120,33 +120,41 @@ export type UpdateDemandeInput = z.infer<typeof updateDemandeSchema>;
 
 // Query Demandes Schema with enhanced validation
 export const queryDemandesSchema = z.object({
-  page: z.coerce.number({
-    error: 'Le numéro de page doit être un nombre'
-  })
-    .int('Le numéro de page doit être un entier')
-    .positive('Le numéro de page doit être positif')
-    .default(1),
-  limit: z.coerce.number({
-    error: 'La limite doit être un nombre'
-  })
-    .int('La limite doit être un entier')
-    .min(1, 'La limite doit être au moins 1')
-    .max(100, 'La limite ne peut pas dépasser 100')
-    .default(20),
-  statut: StatutEnum.optional(),
-  priorite: PrioriteEnum.optional(),
-  typeDemande: TypeDemandeEnum.optional(),
-  sortBy: z.string()
-    .regex(/^-?(createdAt|updatedAt|numeroDemande|priorite|statut)$/, 'Tri invalide')
-    .default('-createdAt'),
-  search: z.string()
-    .transform(normalizeString)
-    .pipe(
-      z.string()
-        .min(2, 'La recherche doit contenir au moins 2 caractères')
-        .max(100, 'La recherche ne peut pas dépasser 100 caractères')
-    )
-    .optional()
+  page: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : Number(val),
+    z.number().int('Le numéro de page doit être un entier').positive('Le numéro de page doit être positif').default(1)
+  ),
+  limit: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : Number(val),
+    z.number().int('La limite doit être un entier').min(1, 'La limite doit être au moins 1').max(100, 'La limite ne peut pas dépasser 100').default(20)
+  ),
+  statut: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : val,
+    StatutEnum.optional()
+  ),
+  priorite: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : val,
+    PrioriteEnum.optional()
+  ),
+  typeDemande: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : val,
+    TypeDemandeEnum.optional()
+  ),
+  sortBy: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : val,
+    z.string().regex(/^-?(createdAt|updatedAt|numeroDemande|priorite|statut)$/, 'Tri invalide').default('-createdAt')
+  ),
+  search: z.preprocess(
+    (val) => (val === null || val === undefined || val === '') ? undefined : val,
+    z.string()
+      .transform(normalizeString)
+      .pipe(
+        z.string()
+          .min(2, 'La recherche doit contenir au moins 2 caractères')
+          .max(100, 'La recherche ne peut pas dépasser 100 caractères')
+      )
+      .optional()
+  )
 })
   .strict();
 

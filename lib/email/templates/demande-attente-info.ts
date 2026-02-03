@@ -5,7 +5,7 @@ import type { EmailTemplate, EmailTemplateResult } from '@/types/email';
  * Sent when additional information is required from the student
  */
 export const demandeAttenteInfoTemplate: EmailTemplate = (data): EmailTemplateResult => {
-  const { prenom, nom, numeroDemande, typeDemande, commentaireAdmin, prochaineDateLimite } = data;
+  const { prenom, nom, demandeId, numeroDemande, typeDemande, commentaireAdmin, prochaineDateLimite } = data;
 
   const formattedDeadline = prochaineDateLimite
     ? new Date(prochaineDateLimite).toLocaleDateString('fr-FR', {
@@ -179,7 +179,7 @@ export const demandeAttenteInfoTemplate: EmailTemplate = (data): EmailTemplateRe
           <!-- CTA Button -->
           <tr>
             <td style="padding: 0 30px 40px 30px; text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/etudiant/demandes/${numeroDemande}"
+              <a href="${process.env.NEXT_PUBLIC_APP_URL}/demandes/${demandeId}"
                  style="display: inline-block; padding: 14px 32px; background-color: #dc2626; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600;">
                 Répondre maintenant
               </a>
