@@ -34,7 +34,7 @@ export function DemandeDetail({ demande, isStudent = false }: DemandeDetailProps
       const formData = new FormData();
       formData.append('commentaire', responseText);
 
-      const result = await addStudentResponseAction(demande._id as string, formData);
+      const result = await addStudentResponseAction(demande._id?.toString() || '', formData);
 
       if (result.success) {
         setSubmitStatus({ success: true, message: 'Votre réponse a été envoyée avec succès.' });
